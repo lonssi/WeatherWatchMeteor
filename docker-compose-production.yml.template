@@ -1,0 +1,19 @@
+version: '2'
+services:
+
+  production:
+    image: weatherwatch-production
+    environment:
+      - MONGO_URL=mongodb://mongo:27017/meteor
+      - ROOT_URL=https://localhost:5000
+      - NODE_ENV=production
+      - METEOR_SETTINGS=##_METEOR_SETTINGS_##
+    expose:
+      - "5000"
+    ports:
+      - "5000:5000" # node.js
+
+  mongo:
+    image: mongo:3.2
+    expose:
+      - "27017"

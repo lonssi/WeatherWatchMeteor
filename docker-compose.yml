@@ -1,0 +1,21 @@
+version: '2'
+services:
+
+  # app is run in as a development server (see run-dev-environment.sh)
+  app:
+    image: weatherwatch-base
+    volumes:
+      - ./app:/app
+    command: /app/run-local.sh
+    working_dir: "/app"
+    expose:
+      - "3000"
+    ports:
+      - "3000:3000" # node.js
+    links:
+      - mongo
+
+  mongo:
+    image: mongo:3.2
+    expose:
+      - "27017"
