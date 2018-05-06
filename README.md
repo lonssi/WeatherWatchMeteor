@@ -8,7 +8,7 @@ WeatherWatch is built with Meteor.js and the front-end is implemented with React
 
 The weather forecast information is obtained using the Open Data API by the Finnish Meteorological Institute (https://en.ilmatieteenlaitos.fi/open-data).
 
-WeatherWatch is running in https://www.weatherwatch.tech
+WeatherWatch is running in https://weatherwatch.tech
 
 ### Requirements
 
