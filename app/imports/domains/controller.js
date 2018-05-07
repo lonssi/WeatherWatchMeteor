@@ -83,15 +83,18 @@ const availableDataModes = [
 const availableClockSizes = [
 	{
 		id: 'small',
-		text: 'Small'
+		text: 'Small',
+		size: 7
 	},
 	{
 		id: 'medium',
-		text: 'Medium'
+		text: 'Medium',
+		size: 6.2
 	},
 	{
 		id: 'large',
-		text: 'Large'
+		text: 'Large',
+		size: 5.5
 	},
 ];
 

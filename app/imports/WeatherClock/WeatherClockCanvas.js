@@ -100,24 +100,8 @@ export class WeatherClockCanvas {
 
 		this.center = { x: this.canvas.width / 2, y: this.canvas.height / 2 }
 
-		var arcWidthUnits;
-		switch (this.settings.clockSize.id) {
-			case "small":
-				arcWidthUnits = 7;
-				break;
-			case "medium":
-				arcWidthUnits = 6.2;
-				break;
-			case "large":
-				arcWidthUnits = 5.5;
-				break;
-			default:
-				arcWidthUnits = 6.2;
-				break;
-		}
-
 		this.unit = this.canvas.height / 33;
-		this.arcWidth = arcWidthUnits * this.unit;
+		this.arcWidth = this.settings.clockSize.size * this.unit;
 		this.arcWidthInner = this.arcWidth - 2 * this.unit;
 		this.rimCenterRadius = this.canvas.height / 2 - this.arcWidth / 2;
 		this.innerRadius = this.canvas.height / 2 - this.arcWidth;
