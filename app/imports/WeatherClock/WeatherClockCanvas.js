@@ -110,7 +110,7 @@ export class WeatherClockCanvas {
 		this.center = { x: this.canvas.width / 2, y: this.canvas.height / 2 }
 
 		this.bound = this.canvas.height;
-		this.unit = this.bound / 33;
+		this.unit = this.bound / 30;
 		this.arcWidth = this.settings.clockSize.size * this.unit;
 		this.arcWidthInner = this.arcWidth - 2 * this.unit;
 		this.rimCenterRadius = this.bound / 2 - this.arcWidth / 2;
@@ -219,7 +219,7 @@ export class WeatherClockCanvas {
 		this.ctxBg.fill();
 
 		// Text settings
-		this.ctxBg.font = this.unit * 1.25 + "px " + this.fontFamily;
+		this.ctxBg.font = this.unit * 1.15 + "px " + this.fontFamily;
 		this.ctxBg.fillStyle = this.colorTheme.text_dark;
 
 		var dateHour = Helpers.getClosestStartingHourDate(this.date) +
@@ -291,60 +291,93 @@ export class WeatherClockCanvas {
 		const events = this.getCelestialEvents(now, rawEvents);
 		const n = events.length;
 
-		for (var i = 0; i < n; i++) {
+		if (this.settings.horizonEventMode.id === "icon") {
 
-			if (!((i !== 0) ^ (i !== n - 1))) {
-				continue;
+			this.ctxBg.fillStyle = upColor;
+			this.ctxBg.font = this.unit * 0.75 + "px FontAwesome";
+
+			for (var i = 0; i < n; i++) {
+
+				if (i === 0 || i === n - 1) {
+					continue;
+				}
+
+				const event = events[i];
+				const symbol = (event.up) ? '\uf062' : '\uf063';
+				const date = event.time;
+				const hour = date.getHours() + date.getMinutes() / 60 + this.tzOffset;
+				const angle = (hour % 12) / 12 * 2 * Math.PI;
+
+				this.ctxBg.save();
+
+				this.ctxBg.translate(this.center.x, this.center.y);
+				this.ctxBg.rotate(angle);
+				this.ctxBg.translate(0, -location);
+				this.ctxBg.rotate(-angle);
+				this.ctxBg.fillText(symbol, 0, 0);
+
+				this.ctxBg.restore();
+
 			}
 
-			const event = events[i];
-			const up = (i === 0) ? event.up : !events[n - 1].up;
-			const color = (up) ? upColor : this.colorTheme.background_darker;
-			const date = event.time;
-			const hour = date.getHours() + date.getMinutes() / 60 + this.tzOffset;
-			const angle = (hour % 12) / 12 * 2 * Math.PI - (Math.PI / 2);
+		} else {
 
-			this.ctxBg.save();
+			for (var i = 0; i < n; i++) {
 
-			this.ctxBg.translate(this.center.x, this.center.y);
-			this.ctxBg.rotate(angle + Math.PI / 2);
-			this.ctxBg.translate(0, -location);
-			this.ctxBg.beginPath();
-			this.ctxBg.arc(0, 0, thickness / 2, 0, 2 * Math.PI);
-			this.ctxBg.fillStyle = color;
-			this.ctxBg.fill();
-			this.ctxBg.closePath();
+				if (!((i !== 0) ^ (i !== n - 1))) {
+					continue;
+				}
 
-			this.ctxBg.restore();
-		}
+				const event = events[i];
+				const up = (i === 0) ? event.up : !events[n - 1].up;
+				const color = (up) ? upColor : this.colorTheme.background_darker;
+				const date = event.time;
+				const hour = date.getHours() + date.getMinutes() / 60 + this.tzOffset;
+				const angle = (hour % 12) / 12 * 2 * Math.PI;
 
-		const intervals = [];
-		for (var i = 1; i < n; i++) {
-			intervals.push({
-				start: events[i - 1].time,
-				end: events[i].time,
-				up: !events[i].up
-			});
-		}
+				this.ctxBg.save();
 
-		for (var i = 0; i < intervals.length; i++) {
+				this.ctxBg.translate(this.center.x, this.center.y);
+				this.ctxBg.rotate(angle);
+				this.ctxBg.translate(0, -location);
+				this.ctxBg.beginPath();
+				this.ctxBg.arc(0, 0, thickness / 2, 0, 2 * Math.PI);
+				this.ctxBg.fillStyle = color;
+				this.ctxBg.fill();
+				this.ctxBg.closePath();
 
-			const interval = intervals[i];
-			const color = (interval.up) ? upColor : this.colorTheme.background_darker;
+				this.ctxBg.restore();
+			}
 
-			const startDate = interval.start;
-			const endDate = interval.end;
+			const intervals = [];
+			for (var i = 1; i < n; i++) {
+				intervals.push({
+					start: events[i - 1].time,
+					end: events[i].time,
+					up: !events[i].up
+				});
+			}
 
-			const startHour = startDate.getHours() + startDate.getMinutes() / 60 + this.tzOffset;
-			const endHour = endDate.getHours() + endDate.getMinutes() / 60 + this.tzOffset;
+			for (var i = 0; i < intervals.length; i++) {
 
-			const startAngle = (startHour % 12) / 12 * 2 * Math.PI - (Math.PI / 2);
-			const endAngle = (endHour % 12) / 12 * 2 * Math.PI - (Math.PI / 2);
+				const interval = intervals[i];
+				const color = (interval.up) ? upColor : this.colorTheme.background_darker;
 
-			this.ctxBg.strokeStyle = color;
-			this.ctxBg.beginPath();
-			this.ctxBg.arc(this.center.x, this.center.y, location, startAngle, endAngle);
-			this.ctxBg.stroke();
+				const startDate = interval.start;
+				const endDate = interval.end;
+
+				const startHour = startDate.getHours() + startDate.getMinutes() / 60 + this.tzOffset;
+				const endHour = endDate.getHours() + endDate.getMinutes() / 60 + this.tzOffset;
+
+				const startAngle = (startHour % 12) / 12 * 2 * Math.PI - (Math.PI / 2);
+				const endAngle = (endHour % 12) / 12 * 2 * Math.PI - (Math.PI / 2);
+
+				this.ctxBg.strokeStyle = color;
+				this.ctxBg.beginPath();
+				this.ctxBg.arc(this.center.x, this.center.y, location, startAngle, endAngle);
+				this.ctxBg.stroke();
+			}
+
 		}
 	}
 

@@ -16,7 +16,8 @@ export const SettingsMenu = React.createClass({
 			open: Controller.settingsOpen(),
 			clockSettings: Controller.getClockSettings(),
 			availableUnitModes: Controller.getAvailableUnitModes(),
-			availableClockSizes: Controller.getAvailableClockSizes()
+			availableClockSizes: Controller.getAvailableClockSizes(),
+			availableHorizonEventModes: Controller.getAvailableHorizonEventModes()
 		};
 	},
 
@@ -58,15 +59,21 @@ export const SettingsMenu = React.createClass({
 		});
 	},
 
+	horizonEventModeChange(event, index, value) {
+		Dispatcher.dispatch({
+			actionType: "HORIZON_EVENT_MODE_SELECTED",
+			data: value
+		});
+	},
+
 	render() {
 
 		const dialogStyle = {
-			maxWidth: '300px'
+			maxWidth: '350px'
 		};
 
 		const selectFieldStyle = {
-			width: "190px",
-			minWidth: "190px"
+			maxWidth: "190px"
 		};
 
 		const actions = [
@@ -78,6 +85,16 @@ export const SettingsMenu = React.createClass({
 		];
 
 		const unitModeItems = this.data.availableUnitModes.map(function(item) {
+			return (
+				<MenuItem
+					primaryText={item.text}
+					key={item.id}
+					value={item.id}
+				/>
+			);
+		});
+
+		const horizonEventModeItems = this.data.availableHorizonEventModes.map(function(item) {
 			return (
 				<MenuItem
 					primaryText={item.text}
@@ -124,6 +141,14 @@ export const SettingsMenu = React.createClass({
 						style={selectFieldStyle}
 					>
 						{unitModeItems}
+					</SelectField>
+					<SelectField
+						floatingLabelText="Horizon event mode"
+						value={this.data.clockSettings.horizonEventMode.id}
+						onChange={this.horizonEventModeChange}
+						style={selectFieldStyle}
+					>
+						{horizonEventModeItems}
 					</SelectField>
 					<SelectField
 						floatingLabelText="Clock size"

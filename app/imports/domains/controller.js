@@ -85,18 +85,23 @@ const availableClockSizes = [
 	{
 		id: 'small',
 		text: 'Small',
-		size: 7
+		size: 6.3
 	},
 	{
 		id: 'medium',
 		text: 'Medium',
-		size: 6.2
+		size: 5.7
 	},
 	{
 		id: 'large',
 		text: 'Large',
-		size: 5.5
+		size: 5.1
 	},
+];
+
+const availableHorizonEventModes = [
+	{ id: 'continuous', text: 'Continuous' },
+	{ id: 'icon', text: 'Icon' }
 ];
 
 var clockSettings = new ReactiveDict();
@@ -107,6 +112,7 @@ clockSettings.set('forecastTimezone', true);
 clockSettings.set('gradientMode', true);
 clockSettings.set('clockSize', availableClockSizes[1]);
 clockSettings.set('secondHand', false);
+clockSettings.set('horizonEventMode', availableHorizonEventModes[0]);
 
 var setUnitMode = function(value, cache) {
 	if (_.isString(value)) {
@@ -195,6 +201,20 @@ var setSecondHand = function(value) {
 	}
 };
 
+var setHorizonEventMode = function(value, cache) {
+	if (_.isString(value)) {
+		const horizonEventMode = _.find(availableHorizonEventModes, { id: value });
+		if (horizonEventMode) {
+			clockSettings.set('horizonEventMode', horizonEventMode);
+			localStorage.horizonEventMode = value;
+		}
+	} else {
+		if (cache) {
+			localStorage.removeItem('horizonEventMode');
+		}
+	}
+};
+
 var getCachedData = function() {
 
 	var value;
@@ -233,6 +253,12 @@ var getCachedData = function() {
 	value = xss(localStorage.secondHand);
 	if (value) {
 		setSecondHand(value);
+	}
+
+	// Check for cached horizon event mode
+	value = xss(localStorage.horizonEventMode);
+	if (value) {
+		setHorizonEventMode(value);
 	}
 
 	// Check for cached location
@@ -333,6 +359,9 @@ if (Meteor.isClient) {
 			case "CLOCK_SIZE_SELECTED":
 				setClockSize(payload.data);
 				break;
+			case "HORIZON_EVENT_MODE_SELECTED":
+				setHorizonEventMode(payload.data);
+				break;
 			case "GET_LOCATION_BUTTON_CLICKED":
 				WeatherController.locationQuery();
 				break;
@@ -353,6 +382,7 @@ export const Controller = {
 	getAvailableUnitModes: function() { return availableUnitModes; },
 	getAvailableDataModes: function() { return availableDataModes; },
 	getAvailableClockSizes: function() { return availableClockSizes; },
+	getAvailableHorizonEventModes: function() { return availableHorizonEventModes; },
 	getImages: function() { return images; },
 	imagesReady: function() { return imagesReady.get(); },
 	settingsOpen: function() { return settingsOpen.get() }
