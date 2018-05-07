@@ -38,6 +38,12 @@ export const SettingsMenu = React.createClass({
 		});
 	},
 
+	secondHandToggled() {
+		Dispatcher.dispatch({
+			actionType: "CLOCK_SECOND_HAND_TOGGLED"
+		});
+	},
+
 	unitModeChange(event, index, value) {
 		Dispatcher.dispatch({
 			actionType: "UNIT_MODE_SELECTED",
@@ -103,6 +109,11 @@ export const SettingsMenu = React.createClass({
 						label="Forecast timezone"
 						checked={this.data.clockSettings.forecastTimezone}
 						onCheck={this.tzModeToggled}
+					/>
+					<Checkbox
+						label="Second hand"
+						checked={this.data.clockSettings.secondHand}
+						onCheck={this.secondHandToggled}
 					/>
 				</div>
 				<div className="settings-select-fields">

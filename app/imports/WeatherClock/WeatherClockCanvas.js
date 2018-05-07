@@ -137,6 +137,16 @@ export class WeatherClockCanvas {
 			[0, minuteIndicatorLength]
 		);
 
+		if (this.settings.secondHand) {
+			this.drawIndicator(
+				this.ctx,
+				this.colorTheme.accent_light,
+				this.clockRadius * 0.014,
+				seconds * 6,
+				[0, minuteIndicatorLength]
+			);
+		}
+
 		this.ctx.beginPath();
 		this.ctx.arc(this.center.x, this.center.y, this.clockRadius * 0.055, 0, 2*Math.PI);
 		this.ctx.fillStyle = this.colorTheme.accent_light;

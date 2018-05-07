@@ -1,5 +1,6 @@
 import {WeatherController} from './weather.js';
 import {Colors} from '../../lib/colors.js';
+import {Helpers} from '../../lib/helpers.js';
 import xss from 'xss';
 
 var settingsOpen = ReactiveVar(false);
@@ -105,6 +106,7 @@ clockSettings.set('dataMode', availableDataModes[0]);
 clockSettings.set('forecastTimezone', true);
 clockSettings.set('gradientMode', true);
 clockSettings.set('clockSize', availableClockSizes[1]);
+clockSettings.set('secondHand', false);
 
 var setUnitMode = function(value, cache) {
 	if (_.isString(value)) {
@@ -134,34 +136,32 @@ var setDataMode = function(value, cache) {
 	}
 };
 
-var setForecastTimezoneMode = function(value, cache) {
+var setForecastTimezoneMode = function(value) {
 	if (_.isNull(value)) {
 		clockSettings.set('forecastTimezone', !clockSettings.get('forecastTimezone'));
 		localStorage.forecastTimezone = clockSettings.get('forecastTimezone');
 	} else {
-		if (_.isBoolean(value)) {
+		value = Helpers.toBoolean(value);
+		if (value) {
 			clockSettings.set('forecastTimezone', value);
 			localStorage.forecastTimezone = value;
 		} else {
-			if (cache) {
-				localStorage.removeItem('forecastTimezone');
-			}
+			localStorage.removeItem('forecastTimezone');
 		}
 	}
 };
 
-var setGradientMode = function(value, cache) {
+var setGradientMode = function(value) {
 	if (_.isNull(value)) {
 		clockSettings.set('gradientMode', !clockSettings.get('gradientMode'));
 		localStorage.gradientMode = clockSettings.get('gradientMode');
 	} else {
-		if (_.isBoolean(value)) {
+		value = Helpers.toBoolean(value);
+		if (value) {
 			clockSettings.set('gradientMode', value);
 			localStorage.gradientMode = value;
 		} else {
-			if (cache) {
-				localStorage.removeItem('gradientMode');
-			}
+			localStorage.removeItem('gradientMode');
 		}
 	}
 };
@@ -176,6 +176,21 @@ var setClockSize = function(value, cache) {
 	} else {
 		if (cache) {
 			localStorage.removeItem('clockSize');
+		}
+	}
+};
+
+var setSecondHand = function(value) {
+	if (_.isNull(value)) {
+		clockSettings.set('secondHand', !clockSettings.get('secondHand'));
+		localStorage.secondHand = clockSettings.get('secondHand');
+	} else {
+		value = Helpers.toBoolean(value);
+		if (value) {
+			clockSettings.set('secondHand', value);
+			localStorage.secondHand = value;
+		} else {
+			localStorage.removeItem('secondHand');
 		}
 	}
 };
@@ -199,15 +214,13 @@ var getCachedData = function() {
 	// Check for cached timezone mode
 	value = xss(localStorage.forecastTimezone);
 	if (value) {
-		value = JSON.parse(value);
-		setForecastTimezoneMode(value, true);
+		setForecastTimezoneMode(value);
 	}
 
 	// Check for cached gradient mode
 	value = xss(localStorage.gradientMode);
 	if (value) {
-		value = JSON.parse(value);
-		setGradientMode(value, true);
+		setGradientMode(value);
 	}
 
 	// Check for cached clock size
@@ -216,7 +229,13 @@ var getCachedData = function() {
 		setClockSize(value, true);
 	}
 
-	//Check for cached location
+	// Check for cached clock second hand
+	value = xss(localStorage.secondHand);
+	if (value) {
+		setSecondHand(value);
+	}
+
+	// Check for cached location
 	value = xss(localStorage.location);
 	if (value && _.isString(value)) {
 		setTimeout(function() {
@@ -253,7 +272,9 @@ var loadImages = function() {
 	];
 
 	var handleImageChange = function() {
-		imagesReady.set(imagesLoaded());
+		if (imagesLoaded()) {
+			imagesReady.set(true);
+		}
 	};
 
 	images = {};
@@ -302,6 +323,9 @@ if (Meteor.isClient) {
 				break;
 			case "FORECAST_TIMEZONE_TOGGLED":
 				setForecastTimezoneMode(null);
+				break;
+			case "CLOCK_SECOND_HAND_TOGGLED":
+				setSecondHand(null);
 				break;
 			case "GRADIENT_MODE_TOGGLED":
 				setGradientMode(null);

@@ -28,6 +28,19 @@ export const Helpers = {
 		}
 	},
 
+	toBoolean: function(value) {
+		try {
+			value = JSON.parse(value);
+			if (_.isBoolean(value)) {
+				return value;
+			} else {
+				throw "Not boolean";
+			}
+		} catch (e) {
+			return null;
+		}
+	},
+
 	getClosestStartingHourDate: function(date) {
 		return date.getTime() - date.getMinutes() * Constants.minuteEpochs -
 			date.getSeconds() * Constants.secondEpochs - date.getMilliseconds();
