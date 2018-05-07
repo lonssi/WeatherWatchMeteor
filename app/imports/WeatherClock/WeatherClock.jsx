@@ -89,7 +89,7 @@ export const WeatherClock = React.createClass({
 		var self = this;
 		this.clockupdate = setInterval(function() {
 			self.weatherclock.update(false);
-		}, 1000);
+		}, 100);
 	},
 
 	getBottomSection() {

@@ -23,6 +23,8 @@ export class WeatherClockCanvas {
 		this.settings = clockSettings;
 		this.container = container;
 		this.colorTheme = colorTheme;
+
+		this.datePrev = new Date();
 	}
 
 	clear() {
@@ -41,21 +43,29 @@ export class WeatherClockCanvas {
 
 		this.date = new Date();
 
-		if (this.settings.forecastTimezone) {
-			this.tzOffset = (this.date.getTimezoneOffset() / 60) + this.weatherData.timeZoneOffset;
-		} else {
-			this.tzOffset = 0;
+		if (!updateAll) {
+			// Draw all elements if the starting hour has changed
+			updateAll = this.date.getHours() !== this.datePrev.getHours();
 		}
 
 		if (!updateAll) {
-			// Draw all elements if the starting hour has changed
-			updateAll = this.date.getHours() !== this.prevHour;
+			const diff = this.date - this.datePrev;
+			const threshold = (this.settings.secondHand) ? 1000 : 5000;
+			if (diff < threshold) {
+				return;
+			}
 		}
 
 		if (updateAll) {
 			this.resize();
 		} else {
 			this.clear();
+		}
+
+		if (this.settings.forecastTimezone) {
+			this.tzOffset = (this.date.getTimezoneOffset() / 60) + this.weatherData.timeZoneOffset;
+		} else {
+			this.tzOffset = 0;
 		}
 
 		if (updateAll) {
@@ -68,7 +78,7 @@ export class WeatherClockCanvas {
 		this.drawClockHands();
 		this.drawHighlighter();
 
-		this.prevHour = this.date.getHours();
+		this.datePrev = this.date;
 	}
 
 	resize() {
@@ -312,7 +322,7 @@ export class WeatherClockCanvas {
 
 		const dataMode = this.settings.dataMode.id;
 		const rawEvents = (dataMode !== 'moon') ? this.weatherData.sunEvents : this.weatherData.moonEvents;
-		const events = Helpers.getCelestialEvents(now, rawEvents);
+		const events = this.getCelestialEvents(now, rawEvents);
 		const n = events.length;
 
 		for (var i = 0; i < n; i++) {
@@ -370,6 +380,68 @@ export class WeatherClockCanvas {
 			this.ctxBg.arc(this.center.x, this.center.y, location, startAngle, endAngle);
 			this.ctxBg.stroke();
 		}
+	}
+
+	getCelestialEvents(start, initEvents) {
+
+		const end = new Date(start.getTime() + 11 * Constants.hourEpochs);
+
+		const eventsAll = [];
+
+		for (var i = 0; i < initEvents.rises.length; i++) {
+			eventsAll.push({
+				up: true,
+				time: initEvents.rises[i]
+			});
+		}
+
+		for (var i = 0; i < initEvents.sets.length; i++) {
+			eventsAll.push({
+				up: false,
+				time: initEvents.sets[i]
+			});
+		}
+
+		eventsAll.sort(function(a, b) { return (a.time > b.time) ? 1 : ((b.time > a.time) ? -1 : 0); } );
+
+		// Check which events are within time interval
+		const events = [];
+		var overEvent = null;
+		for (var i = 0; i < eventsAll.length; i++) {
+			const event = eventsAll[i];
+			if (start <= event.time && event.time <= end) {
+				events.push(event);
+			}
+			// Store the first event that exceeds time scope
+			if (event.time > end && !overEvent) {
+				overEvent = event;
+			}
+		}
+
+		var n = events.length;
+
+		var startUp, endUp;
+		if (n > 0) {
+			startUp = !events[0].up;
+			endUp = !events[n - 1].up;
+		} else {
+			startUp = !overEvent.up;
+			endUp = !startUp;
+		}
+
+		// Add the beginning of time scope as an event
+		events.unshift({
+			up: startUp,
+			time: start
+		});
+
+		// Add the end of time scope as an event
+		events.push({
+			up: endUp,
+			time: end
+		});
+
+		return events;
 	}
 
 	getWeatherDataArray() {
