@@ -76,7 +76,6 @@ export class WeatherClockCanvas {
 
 		// Draw dynamic elements
 		this.drawClockHands();
-		this.drawHighlighter();
 
 		this.datePrev = this.date;
 	}
@@ -110,11 +109,12 @@ export class WeatherClockCanvas {
 
 		this.center = { x: this.canvas.width / 2, y: this.canvas.height / 2 }
 
-		this.unit = this.canvas.height / 33;
+		this.bound = this.canvas.height;
+		this.unit = this.bound / 33;
 		this.arcWidth = this.settings.clockSize.size * this.unit;
 		this.arcWidthInner = this.arcWidth - 2 * this.unit;
-		this.rimCenterRadius = this.canvas.height / 2 - this.arcWidth / 2;
-		this.innerRadius = this.canvas.height / 2 - this.arcWidth;
+		this.rimCenterRadius = this.bound / 2 - this.arcWidth / 2;
+		this.innerRadius = this.bound / 2 - this.arcWidth;
 		this.clockRadius = this.innerRadius - this.unit;
 	}
 
@@ -186,40 +186,6 @@ export class WeatherClockCanvas {
 		ctx.stroke();
 		ctx.closePath();
 		ctx.restore();
-	}
-
-	drawHighlighter() {
-
-		const hours = this.date.getHours() + this.tzOffset;
-		const minutes = this.date.getMinutes();
-		const seconds = this.date.getSeconds();
-
-		const value = (hours + minutes / 60 + seconds / 3600 + 3) % 12;
-		const valueDeg = value / 12 * 360;
-		const angle = valueDeg * Math.PI / 180 - Math.PI / 2;
-
-		const dataMode = this.settings.dataMode.id;
-		const ringColor = (dataMode === 'moon') ? this.colorTheme.text_light : this.colorTheme.accent_2;
-
-		this.ctx.save();
-
-		this.ctx.translate(this.center.x, this.center.y);
-		this.ctx.rotate(angle);
-		this.ctx.translate(0, -(this.clockRadius + 0.5 * this.unit));
-
-		this.ctx.beginPath();
-		this.ctx.arc(0, 0, this.unit * 0.35, 0, 2*Math.PI);
-		this.ctx.fillStyle = ringColor;
-		this.ctx.fill();
-		this.ctx.closePath();
-
-		this.ctx.beginPath();
-		this.ctx.arc(0, 0, this.unit * 0.25, 0, 2*Math.PI);
-		this.ctx.fillStyle = this.colorTheme.background_darker;
-		this.ctx.fill();
-		this.ctx.closePath();
-
-		this.ctx.restore();
 	}
 
 	drawStaticElementsToCache() {
@@ -300,7 +266,7 @@ export class WeatherClockCanvas {
 	drawWeatherBackground() {
 		this.ctxBg.fillStyle = this.colorTheme.background_dark;
 		this.ctxBg.beginPath()
-		this.ctxBg.arc(this.center.x, this.center.y, this.canvas.height / 2, 0, Math.PI * 2, false);
+		this.ctxBg.arc(this.center.x, this.center.y, this.bound / 2, 0, Math.PI * 2, false);
 		this.ctxBg.arc(this.center.x, this.center.y, this.innerRadius, 0, Math.PI * 2, true);
 		this.ctxBg.fill();
 	}
@@ -852,12 +818,14 @@ export class WeatherClockCanvas {
 		this.ctxBg.lineWidth = 2 * widthExtra;
 		this.ctxBg.strokeStyle = this.colorTheme.background_dark;
 
+		const o = 0.05;
+
 		this.ctxBg.beginPath();
-		this.ctxBg.arc(this.center.x, this.center.y, location + (width + widthExtra), 0, 2 * Math.PI);
+		this.ctxBg.arc(this.center.x, this.center.y, location + (width + widthExtra), startAngle - o, endAngle + o);
 		this.ctxBg.stroke();
 
 		this.ctxBg.beginPath();
-		this.ctxBg.arc(this.center.x, this.center.y, location - (width + widthExtra), 0, 2 * Math.PI);
+		this.ctxBg.arc(this.center.x, this.center.y, location - (width + widthExtra), startAngle - o, endAngle + o);
 		this.ctxBg.stroke();
 	}
 }
