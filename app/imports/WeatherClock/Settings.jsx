@@ -16,7 +16,9 @@ export const SettingsMenu = React.createClass({
 			open: Controller.settingsOpen(),
 			clockSettings: Controller.getClockSettings(),
 			availableUnitModes: Controller.getAvailableUnitModes(),
-			availableClockSizes: Controller.getAvailableClockSizes()
+			availableClockSizes: Controller.getAvailableClockSizes(),
+			colorTheme: Controller.getColorTheme(),
+			colorThemes: Controller.getColorThemes()
 		};
 	},
 
@@ -41,6 +43,13 @@ export const SettingsMenu = React.createClass({
 	secondHandToggled() {
 		Dispatcher.dispatch({
 			actionType: "CLOCK_SECOND_HAND_TOGGLED"
+		});
+	},
+
+	colorThemeChange(event, index, value) {
+		Dispatcher.dispatch({
+			actionType: "COLOR_THEME_SELECTED",
+			data: value
 		});
 	},
 
@@ -71,11 +80,20 @@ export const SettingsMenu = React.createClass({
 
 		const actions = [
 			<FlatButton
-				label="CLOSE"
-				primary={true}
+				label="close"
 				onClick={this.handleDialogClose}
 			/>
 		];
+
+		const colorThemeItems = this.data.colorThemes.map(function(item) {
+			return (
+				<MenuItem
+					primaryText={item.name}
+					key={item.id}
+					value={item.id}
+				/>
+			);
+		});
 
 		const unitModeItems = this.data.availableUnitModes.map(function(item) {
 			return (
@@ -117,6 +135,14 @@ export const SettingsMenu = React.createClass({
 					/>
 				</div>
 				<div className="settings-select-fields">
+					<SelectField
+						floatingLabelText="Color theme"
+						value={this.data.colorTheme.id}
+						onChange={this.colorThemeChange}
+						style={selectFieldStyle}
+					>
+						{colorThemeItems}
+					</SelectField>
 					<SelectField
 						floatingLabelText="Units"
 						value={this.data.clockSettings.unitMode.id}

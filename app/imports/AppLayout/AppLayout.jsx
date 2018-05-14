@@ -1,7 +1,7 @@
 import React from 'react';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
-import {Colors} from '../../lib/colors.js';
+import {Controller} from '../domains/controller.js';
 import {WeatherController} from '../domains/weather.js';
 import {WeatherClock} from '../WeatherClock/WeatherClock.jsx';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -11,19 +11,6 @@ import {Helpers} from '../../lib/helpers.js';
 import {SettingsMenu} from '../WeatherClock/Settings.jsx';
 import xss from 'xss';
 
-
-const colorTheme = Colors.colorTheme;
-const muiTheme = getMuiTheme({
-	palette: {
-		primary1Color: colorTheme.text_light,
-		textColor: colorTheme.text_light,
-		borderColor: colorTheme.text_darker,
-		disabledColor: colorTheme.text_dark,
-		canvasColor: colorTheme.background_dark,
-		alternateTextColor: colorTheme.background_dark,
-		accent1Color: colorTheme.accent_light
-	}
-});
 
 export const LocationInput = React.createClass({
 
@@ -84,7 +71,7 @@ export const LocationInput = React.createClass({
 
 		const locationBtnClasses = classNames({
 			"fa": true,
-			"fa-crosshairs": true
+			"fa-map-marker": true
 		});
 
 		const searchBtnClasses = classNames({
@@ -103,7 +90,6 @@ export const LocationInput = React.createClass({
 					<div className="location-button-container">
 						<FlatButton
 							icon={<i className={locationBtnClasses} />}
-							primary={true}
 							onTouchTap={this.locationButtonClicked}
 							style={buttonStyle}
 							disabled={locationDisabled}
@@ -120,7 +106,6 @@ export const LocationInput = React.createClass({
 					<div className="location-button-container">
 						<FlatButton
 							icon={<i className={searchBtnClasses} />}
-							primary={true}
 							onTouchTap={this.searchButtonClicked}
 							style={buttonStyle}
 						/>
@@ -137,13 +122,46 @@ export const LocationInput = React.createClass({
 
 export const AppLayout = React.createClass({
 
+	mixins: [ReactMeteorData],
+	getMeteorData: function() {
+		return {
+			colorTheme: Controller.getColorTheme()
+		};
+	},
+
 	componentDidMount() {
 		Dispatcher.dispatch({
 			actionType: "CLIENT_INITIALIZED"
 		});
 	},
 
+	setBodyStyles(colorTheme) {
+		document.body.style.color = colorTheme.text_light;
+		document.body.style.backgroundColor = colorTheme.background_light;
+	},
+
 	render() {
+
+		const colorTheme = this.data.colorTheme;
+
+		if (!colorTheme) {
+			return null;
+		}
+
+		const muiTheme = getMuiTheme({
+			palette: {
+				primary1Color: colorTheme.accent_light,
+				textColor: colorTheme.text_light,
+				borderColor: colorTheme.border_color,
+				disabledColor: colorTheme.hint_color,
+				canvasColor: colorTheme.menu_color,
+				alternateTextColor: colorTheme.background_dark,
+				accent1Color: colorTheme.accent_light
+			}
+		});
+
+		this.setBodyStyles(colorTheme);
+
 		return (
 			<MuiThemeProvider muiTheme={muiTheme}>
 				<div className="content-container">

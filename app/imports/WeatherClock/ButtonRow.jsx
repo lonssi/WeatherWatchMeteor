@@ -52,6 +52,7 @@ export const ButtonRow = React.createClass({
 
 		const settingsOpen = this.props.settingsOpen;
 		const clockSettings = this.props.clockSettings
+		const colorTheme = this.props.colorTheme;
 
 		const futureBtnClasses = classNames({
 			"fa": true,
@@ -68,17 +69,15 @@ export const ButtonRow = React.createClass({
 			minWidth: '36px'
 		};
 
-		const dataMenuButtonActiveClasses = classNames({
-			"bottom-button-active": this.state.dataMenuOpen
-		});
+		if (settingsOpen) {
+			_.extend(dotMenuBtnStyle, { backgroundColor: colorTheme.background_dark });
+		}
 
-		const dotMenuButtonActiveClasses = classNames({
-			"bottom-button-active": settingsOpen
-		});
+		const dataMenuButtonStyle = (this.state.dataMenuOpen) ?
+			{ backgroundColor: colorTheme.background_dark } : {};
 
-		const futureButtonActiveClasses = classNames({
-			"bottom-button-active": clockSettings.futureMode
-		});
+		const futureButtonStyle = (clockSettings.futureMode) ?
+			{ backgroundColor: colorTheme.background_dark } : {};
 
 		const dataModeItems = this.props.availableDataModes.map(function(item) {
 			const itemClasses = classNames({
@@ -92,9 +91,13 @@ export const ButtonRow = React.createClass({
 					</div>
 				</div>
 			);
+
+			const itemStyle = (item.id === clockSettings.dataMode.id) ?
+				{backgroundColor: colorTheme.background_darker} : {};
+
 			return (
 				<MenuItem
-					className={itemClasses}
+					style={itemStyle}
 					primaryText={item.text}
 					key={item.id}
 					onClick={this.dataModeButtonClick.bind(null, item.id)}
@@ -109,7 +112,7 @@ export const ButtonRow = React.createClass({
 					onClick={this.handleDataMenuTouchTap}
 					icon={<i className={"fa " + clockSettings.dataMode.icon} />}
 					label="data"
-					className={dataMenuButtonActiveClasses}
+					style={dataMenuButtonStyle}
 				/>
 				<Popover
 					open={this.state.dataMenuOpen}
@@ -124,17 +127,14 @@ export const ButtonRow = React.createClass({
 				</Popover>
 				<FlatButton
 					icon={<i className={dotMenuBtnClasses} />}
-					primary={true}
 					onTouchTap={this.dotMenuButtonClick}
-					className={dotMenuButtonActiveClasses}
 					style={dotMenuBtnStyle}
 				/>
 				<FlatButton
 					icon={<i className={futureBtnClasses} />}
 					label="+12h"
-					primary={true}
 					onTouchTap={this.futureButtonClick}
-					className={futureButtonActiveClasses}
+					style={futureButtonStyle}
 				/>
 			</div>
 		);
