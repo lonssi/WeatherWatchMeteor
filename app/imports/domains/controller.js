@@ -5,6 +5,60 @@ import xss from 'xss';
 
 var settingsOpen = ReactiveVar(false);
 
+const colorThemeDark = {
+	id: 'dark',
+	name: 'Dark',
+	background_light: '#475663',
+	background_dark: '#3E4B57',
+	background_darker: '#37434C',
+	background_clock: '#FFFFFF',
+	accent_light: '#E6944C',
+	accent_dark: '#BA5E20',
+	accent_2: '#EEB52F',
+	accent_3: '#E6944C',
+	text_light: '#A1B1B3',
+	text_dark: '#76898C',
+	text_data: '#212121',
+	menu_color: '#3E4B57',
+	clock_color: '#3E4B57',
+	border_color: '#323838',
+	hint_color: '#76898C',
+	down_color: '#37434C',
+	moon_bright_up: '#A1B1B3',
+	moon_bright_down: '#475663',
+	moon_dark: '#37434C'
+};
+
+const colorThemeLight = {
+	id: 'light',
+	name: 'Light',
+	background_light: '#FFFFFF',
+	background_dark: '#EEEEEE',
+	background_darker: '#CBCBCB',
+	background_clock: '#FFFFFF',
+	accent_light: '#6A859A',
+	accent_dark: '#54697A',
+	accent_2: '#FABA25',
+	text_light: '#363636',
+	text_dark: '#777777',
+	text_data: '#212121',
+	menu_color: '#FFFFFF',
+	clock_color: '#3E4B57',
+	border_color: '#DFDFDF',
+	hint_color: '#B2B2B2',
+	down_color: '#54697A',
+	moon_bright_up: '#A1B1B3',
+	moon_bright_down: '#4D5D6B',
+	moon_dark: '#3E4C56'
+};
+
+const colorThemes = [
+	colorThemeDark,
+	colorThemeLight
+];
+
+var colorTheme = new ReactiveVar(null);
+
 const availableUnitModes = [
 	{ id: 'si', text: 'SI' },
 	{ id: 'imperial', text: 'Imperial' }
@@ -195,6 +249,34 @@ var setSecondHand = function(value) {
 	}
 };
 
+var setColorTheme = function(value, cache) {
+	if (_.isString(value)) {
+		const ct = _.find(colorThemes, { id: value });
+		if (ct) {
+			colorTheme.set(ct)
+			localStorage.colorTheme = value;
+		}
+	} else {
+		if (cache) {
+			localStorage.removeItem('colorTheme');
+		}
+	}
+};
+
+var initialize = function() {
+
+	// If we are on a mobile device use the light
+	// color theme by default because of better
+	// visibility in outdoor lighting conditions
+	if ($(window).width() < 480) {
+		colorTheme.set(colorThemes[1]);
+	} else {
+		colorTheme.set(colorThemes[0]);
+	}
+
+	getCachedData();
+};
+
 var getCachedData = function() {
 
 	var value;
@@ -233,6 +315,12 @@ var getCachedData = function() {
 	value = xss(localStorage.secondHand);
 	if (value) {
 		setSecondHand(value);
+	}
+
+	// Check for cached color theme
+	value = xss(localStorage.colorTheme);
+	if (value) {
+		setColorTheme(value, true);
 	}
 
 	// Check for cached location
@@ -307,7 +395,7 @@ if (Meteor.isClient) {
 	Dispatcher.register(function(payload) {
 		switch (payload.actionType) {
 			case "CLIENT_INITIALIZED":
-				getCachedData();
+				initialize();
 				break;
 			case "SEARCH_BUTTON_CLICKED":
 				WeatherController.queryWeatherInformation(payload.data);
@@ -317,6 +405,9 @@ if (Meteor.isClient) {
 				break;
 			case "DATA_MODE_BUTTON_CLICKED":
 				setDataMode(payload.data);
+				break;
+			case "COLOR_THEME_SELECTED":
+				setColorTheme(payload.data);
 				break;
 			case "UNIT_MODE_SELECTED":
 				setUnitMode(payload.data);
@@ -348,6 +439,8 @@ if (Meteor.isClient) {
 
 export const Controller = {
 	loadImages,
+	getColorTheme: function() { return colorTheme.get(); },
+	getColorThemes: function() { return colorThemes; },
 	getDataTypes: function() { return dataTypes; },
 	getClockSettings: function() { return clockSettings.all(); },
 	getAvailableUnitModes: function() { return availableUnitModes; },

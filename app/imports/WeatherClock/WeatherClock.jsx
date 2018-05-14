@@ -3,7 +3,6 @@ import {WeatherController} from '../domains/weather.js';
 import {Controller} from '../domains/controller.js';
 import {ButtonRow} from './ButtonRow.jsx';
 import {WeatherClockCanvas} from './WeatherClockCanvas.js';
-import {Colors} from '../../lib/colors.js';
 
 
 export const WeatherClock = React.createClass({
@@ -17,7 +16,8 @@ export const WeatherClock = React.createClass({
 			location: WeatherController.getLocation(),
 			clockSettings: Controller.getClockSettings(),
 			availableDataModes: Controller.getAvailableDataModes(),
-			settingsOpen: Controller.settingsOpen()
+			settingsOpen: Controller.settingsOpen(),
+			colorTheme: Controller.getColorTheme()
 		};
 	},
 
@@ -38,6 +38,7 @@ export const WeatherClock = React.createClass({
 		if (this.weatherclock) {
 			this.weatherclock.setSettings(this.data.clockSettings);
 			this.weatherclock.updateWeatherData(this.data.weatherData);
+			this.weatherclock.updateColorTheme(this.data.colorTheme);
 			this.weatherclock.update(true);
 		}
 
@@ -81,7 +82,7 @@ export const WeatherClock = React.createClass({
 			this.data.weatherData,
 			this.data.clockSettings,
 			this.refs.container,
-			Colors.colorTheme
+			this.data.colorTheme
 		);
 
 		this.weatherclock.update(true);
@@ -96,6 +97,7 @@ export const WeatherClock = React.createClass({
 
 		const forecastTimezone = this.data.clockSettings.forecastTimezone;
 		const updateTime = this.data.weatherData.time;
+		const colorTheme = this.data.colorTheme;
 
 		const tz = (forecastTimezone) ? { timeZone: this.data.weatherData.timeZone } : {};
 		const tzHours = (forecastTimezone) ? this.data.weatherData.timeZoneOffset
@@ -106,9 +108,13 @@ export const WeatherClock = React.createClass({
 			"UTC" + prefix + tzHours;
 		const disclaimerText = "weather data by finnish meteorological institute";
 
+		const styles = {
+			color: colorTheme.text_dark
+		};
+
 		return (
 			<div className="bottom-section-container">
-				<div className="last-updated-container">
+				<div className="last-updated-container" style={styles}>
 					{updatedText}
 					<br/>
 					{disclaimerText}
@@ -117,6 +123,7 @@ export const WeatherClock = React.createClass({
 					settingsOpen={this.data.settingsOpen}
 					clockSettings={this.data.clockSettings}
 					availableDataModes={this.data.availableDataModes}
+					colorTheme={this.data.colorTheme}
 				/>
 			</div>
 		);

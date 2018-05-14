@@ -1,5 +1,4 @@
 @import 'imports';
-@import 'theme';
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 
 body, html {
@@ -10,8 +9,6 @@ body {
 	font-family: 'Roboto', sans-serif;
 	margin: 0 !important;
 	padding: 0 !important;
-	background-color: theme-color('background_light');
-	color: theme-color('text_light');
 	font-size: 1em;
 }
 
