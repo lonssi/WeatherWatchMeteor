@@ -77,6 +77,7 @@ const colorThemes = [
 ];
 
 var colorTheme = new ReactiveVar(null);
+var hue = new ReactiveVar(0);
 
 const availableUnitModes = [
 	{ id: 'si', text: 'SI' },
@@ -268,11 +269,24 @@ var setSecondHand = function(value) {
 	}
 };
 
+var setHue = function(value, cache) {
+	value = Helpers.toFloat(value);
+	if (_.isNumber(value) && value >= 0 && value <= 1) {
+		hue.set(value);
+		localStorage.hue = value;
+	} else {
+		if (cache) {
+			localStorage.removeItem('hue');
+		}
+	}
+};
+
 var setColorTheme = function(value, cache) {
 	if (_.isString(value)) {
 		const ct = _.find(colorThemes, { id: value });
 		if (ct) {
-			colorTheme.set(ct)
+			const ctNew = Colors.getColorTheme(ct, hue.get());
+			colorTheme.set(ctNew);
 			localStorage.colorTheme = value;
 		}
 	} else {
@@ -334,6 +348,12 @@ var getCachedData = function() {
 	value = xss(localStorage.secondHand);
 	if (value) {
 		setSecondHand(value);
+	}
+
+	// Check for cached color theme hue
+	value = xss(localStorage.hue);
+	if (value) {
+		setHue(value, true);
 	}
 
 	// Check for cached color theme
@@ -428,6 +448,10 @@ if (Meteor.isClient) {
 			case "COLOR_THEME_SELECTED":
 				setColorTheme(payload.data);
 				break;
+			case "HUE_CHANGED":
+				setHue(payload.data);
+				setColorTheme(colorTheme.get().id);
+				break;
 			case "UNIT_MODE_SELECTED":
 				setUnitMode(payload.data);
 				break;
@@ -460,6 +484,7 @@ export const Controller = {
 	loadImages,
 	getColorTheme: function() { return colorTheme.get(); },
 	getColorThemes: function() { return colorThemes; },
+	getHue: function() { return hue.get(); },
 	getDataTypes: function() { return dataTypes; },
 	getClockSettings: function() { return clockSettings.all(); },
 	getAvailableUnitModes: function() { return availableUnitModes; },

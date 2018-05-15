@@ -59,4 +59,18 @@
 			margin-top: 12px;
 		}
 	}
+
+	.settings-name-field {
+		margin-top: 10px;
+		line-height: 22px;
+		transform-origin: left top 0px;
+		transform: scale(0.75);
+	}
+
+	.settings-slider-container {
+		width: 86%;
+		margin: 0 auto;
+		margin-top: -18px;
+		margin-bottom: -40px;
+	}
 }

@@ -6,6 +6,7 @@ import Toggle from 'material-ui/Toggle';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import Checkbox from 'material-ui/Checkbox';
+import Slider from 'material-ui/Slider';
 
 
 export const SettingsMenu = React.createClass({
@@ -18,7 +19,8 @@ export const SettingsMenu = React.createClass({
 			availableUnitModes: Controller.getAvailableUnitModes(),
 			availableClockSizes: Controller.getAvailableClockSizes(),
 			colorTheme: Controller.getColorTheme(),
-			colorThemes: Controller.getColorThemes()
+			colorThemes: Controller.getColorThemes(),
+			hue: Controller.getHue()
 		};
 	},
 
@@ -53,6 +55,13 @@ export const SettingsMenu = React.createClass({
 		});
 	},
 
+	hueChange(event, value) {
+		Dispatcher.dispatch({
+			actionType: "HUE_CHANGED",
+			data: value
+		});
+	},
+
 	unitModeChange(event, index, value) {
 		Dispatcher.dispatch({
 			actionType: "UNIT_MODE_SELECTED",
@@ -70,12 +79,11 @@ export const SettingsMenu = React.createClass({
 	render() {
 
 		const dialogStyle = {
-			maxWidth: '300px'
+			maxWidth: '340px'
 		};
 
 		const selectFieldStyle = {
-			width: "190px",
-			minWidth: "190px"
+			width: "100%"
 		};
 
 		const actions = [
@@ -143,6 +151,17 @@ export const SettingsMenu = React.createClass({
 					>
 						{colorThemeItems}
 					</SelectField>
+					<br />
+					<div className="settings-name-field">
+						{'Color theme hue'}
+					</div>
+					<div className="settings-slider-container">
+						<Slider
+							step={0.05}
+							value={this.data.hue}
+							onChange={this.hueChange}
+						/>
+					</div>
 					<SelectField
 						floatingLabelText="Units"
 						value={this.data.clockSettings.unitMode.id}
@@ -151,6 +170,7 @@ export const SettingsMenu = React.createClass({
 					>
 						{unitModeItems}
 					</SelectField>
+					<br />
 					<SelectField
 						floatingLabelText="Clock size"
 						value={this.data.clockSettings.clockSize.id}

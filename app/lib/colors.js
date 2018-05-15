@@ -70,7 +70,7 @@ var getTemperatureColor = function(x) {
 		color = colorScaleB(x);
 	}
 	return color.set('lab.l', '*1.275').set('lch.c', '*1.1');
-}
+};
 
 var getPrecipitationColor = function(x) {
 	const offset = 0.05;
@@ -80,27 +80,53 @@ var getPrecipitationColor = function(x) {
 		x = Helpers.clamp((x - offset) / 12, 0, 1);
 		return colorScaleC(x).set('lab.l', '*1.275').set('lch.c', '*1.1');
 	}
-}
+};
 
 var getWindColor = function(x) {
 	x = Helpers.remapValue(x, [0, 27], [0, 1]);
 	return colorScaleC(x).set('lab.l', '*1.275').set('lch.c', '*1.1');
-}
+};
 
 var getHumidityColor = function(x) {
 	x = x / 100;
 	x = -Math.pow(x - 1, 2) + 1;
 	return humidityScale(x).set('lab.l', '*1.1');
-}
+};
 
 var getCloudColor = function(x) {
 	return (cloudScale((100 - x) / 100)).set('lab.l', '*1.1');
-}
+};
+
+var getColorTheme = function(theme, hue) {
+
+	hue = hue * 360;
+
+	const themeNew = JSON.parse(JSON.stringify(theme));
+	const hueString = (hue >= 0) ? "+" + hue.toString() : hue.toString();
+
+	for (var key in themeNew) {
+
+		if (key === "static" || key === "id" || key === "name") {
+			continue;
+		}
+
+		const category = themeNew[key];
+
+		for (var cKey in category) {
+			const color = category[cKey];
+			const colorNew = chroma(color).set('hsl.h', hueString);
+			category[cKey] = colorNew.hex();
+		}
+	}
+
+	return themeNew;
+};
 
 export const Colors = {
 	getTemperatureColor,
 	getPrecipitationColor,
 	getWindColor,
 	getHumidityColor,
-	getCloudColor
+	getCloudColor,
+	getColorTheme
 };
