@@ -109,7 +109,7 @@ export const WeatherClock = React.createClass({
 		const disclaimerText = "weather data by finnish meteorological institute";
 
 		const styles = {
-			color: colorTheme.text_dark
+			color: colorTheme.text.dark
 		};
 
 		return (

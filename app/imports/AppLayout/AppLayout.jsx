@@ -136,8 +136,8 @@ export const AppLayout = React.createClass({
 	},
 
 	setBodyStyles(colorTheme) {
-		document.body.style.color = colorTheme.text_light;
-		document.body.style.backgroundColor = colorTheme.background_light;
+		document.body.style.color = colorTheme.text.light;
+		document.body.style.backgroundColor = colorTheme.bg.light;
 	},
 
 	render() {
@@ -150,13 +150,13 @@ export const AppLayout = React.createClass({
 
 		const muiTheme = getMuiTheme({
 			palette: {
-				primary1Color: colorTheme.accent_light,
-				textColor: colorTheme.text_light,
-				borderColor: colorTheme.border_color,
-				disabledColor: colorTheme.hint_color,
-				canvasColor: colorTheme.menu_color,
-				alternateTextColor: colorTheme.background_dark,
-				accent1Color: colorTheme.accent_light
+				primary1Color: colorTheme.accent.light,
+				textColor: colorTheme.text.light,
+				borderColor: colorTheme.misc.border,
+				disabledColor: colorTheme.misc.hint,
+				canvasColor: colorTheme.misc.menu,
+				alternateTextColor: colorTheme.bg.dark,
+				accent1Color: colorTheme.accent.light
 			}
 		});
 

@@ -70,14 +70,14 @@ export const ButtonRow = React.createClass({
 		};
 
 		if (settingsOpen) {
-			_.extend(dotMenuBtnStyle, { backgroundColor: colorTheme.background_dark });
+			_.extend(dotMenuBtnStyle, { backgroundColor: colorTheme.bg.dark });
 		}
 
 		const dataMenuButtonStyle = (this.state.dataMenuOpen) ?
-			{ backgroundColor: colorTheme.background_dark } : {};
+			{ backgroundColor: colorTheme.bg.dark } : {};
 
 		const futureButtonStyle = (clockSettings.futureMode) ?
-			{ backgroundColor: colorTheme.background_dark } : {};
+			{ backgroundColor: colorTheme.bg.dark } : {};
 
 		const dataModeItems = this.props.availableDataModes.map(function(item) {
 			const itemClasses = classNames({
@@ -93,7 +93,7 @@ export const ButtonRow = React.createClass({
 			);
 
 			const itemStyle = (item.id === clockSettings.dataMode.id) ?
-				{backgroundColor: colorTheme.background_darker} : {};
+				{backgroundColor: colorTheme.bg.darker} : {};
 
 			return (
 				<MenuItem

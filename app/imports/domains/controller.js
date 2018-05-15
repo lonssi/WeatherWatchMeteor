@@ -2,54 +2,73 @@ import {WeatherController} from './weather.js';
 import {Colors} from '../../lib/colors.js';
 import {Helpers} from '../../lib/helpers.js';
 import xss from 'xss';
+import chroma from 'chroma-js';
+
 
 var settingsOpen = ReactiveVar(false);
 
 const colorThemeDark = {
 	id: 'dark',
 	name: 'Dark',
-	background_light: '#475663',
-	background_dark: '#3E4B57',
-	background_darker: '#37434C',
-	background_clock: '#FFFFFF',
-	accent_light: '#E6944C',
-	accent_dark: '#BA5E20',
-	accent_2: '#EEB52F',
-	accent_3: '#E6944C',
-	text_light: '#A1B1B3',
-	text_dark: '#76898C',
-	text_data: '#212121',
-	menu_color: '#3E4B57',
-	clock_color: '#3E4B57',
-	border_color: '#323838',
-	hint_color: '#76898C',
-	down_color: '#37434C',
-	moon_bright_up: '#A1B1B3',
-	moon_bright_down: '#475663',
-	moon_dark: '#37434C'
+	bg: {
+		light: '#475663',
+		dark: '#3E4B57',
+		darker: '#37434C',
+		clock: '#FFFFFF'
+	},
+	accent: {
+		light: '#E6944C',
+		dark: '#BA5E20'
+	},
+	text: {
+		light: '#A1B1B3',
+		dark: '#76898C',
+		data: '#212121'
+	},
+	misc: {
+		menu: '#3E4B57',
+		clock: '#3E4B57',
+		border: '#323838',
+		hint: '#76898C',
+		down: '#37434C'
+	},
+	static: {
+		moon_bright_up: '#A1B1B3',
+		moon_bright_down: '#475663',
+		moon_dark: '#37434C'
+	}
 };
 
 const colorThemeLight = {
 	id: 'light',
 	name: 'Light',
-	background_light: '#FFFFFF',
-	background_dark: '#EEEEEE',
-	background_darker: '#CBCBCB',
-	background_clock: '#FFFFFF',
-	accent_light: '#6A859A',
-	accent_dark: '#54697A',
-	accent_2: '#FABA25',
-	text_light: '#363636',
-	text_dark: '#777777',
-	text_data: '#212121',
-	menu_color: '#FFFFFF',
-	clock_color: '#3E4B57',
-	border_color: '#DFDFDF',
-	hint_color: '#B2B2B2',
-	down_color: '#54697A',
-	moon_bright_up: '#A1B1B3',
-	moon_bright_down: '#4D5D6B',
-	moon_dark: '#3E4C56'
+	bg: {
+		light: '#FFFFFF',
+		dark: '#EEEEEE',
+		darker: '#CBCBCB',
+		clock: '#FFFFFF'
+	},
+	accent: {
+		light: '#6A859A',
+		dark: '#54697A'
+	},
+	text: {
+		light: '#363636',
+		dark: '#777777',
+		data: '#212121'
+	},
+	misc: {
+		menu: '#FFFFFF',
+		clock: '#3E4B57',
+		border: '#DFDFDF',
+		hint: '#B2B2B2',
+		down: '#54697A',
+	},
+	static: {
+		moon_bright_up: '#A1B1B3',
+		moon_bright_down: '#4D5D6B',
+		moon_dark: '#3E4C56'
+	}
 };
 
 const colorThemes = [
