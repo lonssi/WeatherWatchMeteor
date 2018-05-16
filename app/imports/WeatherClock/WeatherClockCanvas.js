@@ -383,8 +383,9 @@ export class WeatherClockCanvas {
 				events.push(event);
 			}
 			// Store the first event that exceeds time scope
-			if (event.time > end && !overEvent) {
+			if (event.time > end) {
 				overEvent = event;
+				break;
 			}
 		}
 

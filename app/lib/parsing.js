@@ -14,7 +14,7 @@ var findCelestialEvents = function(timestamp, latitude, longitude, moon) {
 	const riseKey = (!moon) ? "sunrise" : "rise";
 	const setKey = (!moon) ? "sunset" : "set";
 
-	const maxIterations = 50;
+	const maxIterations = 500;
 
 	for (var i = 0; i < maxIterations; i++) {
 
@@ -25,14 +25,14 @@ var findCelestialEvents = function(timestamp, latitude, longitude, moon) {
 
 		if (riseAttribute) {
 			const rise = riseAttribute.getTime();
-			if (rise !== 0 && !_.includes(rises, rise)) {
+			if (rise && rise !== 0 && !_.includes(rises, rise)) {
 				rises.push(rise);
 			}
 		}
 
 		if (setAttribute) {
 			const set = setAttribute.getTime();
-			if (set !== 0 && !_.includes(sets, set)) {
+			if (set && set !== 0 && !_.includes(sets, set)) {
 				sets.push(set);
 			}
 		}
