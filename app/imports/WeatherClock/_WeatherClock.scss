@@ -1,32 +1,67 @@
 
-.location-text-container {
-	height: 6.25%;
-	text-transform: uppercase;
-}
+@media only screen and (max-width: 480px) {
 
-.weather-clock-container {
-	box-sizing: border-box;
-	width: 100%;
-	height: 62.5%;
-	text-align: center;
+	.location-text-container {
+		margin-top: 1vw;
+		margin-bottom: 3vw;
+		text-transform: uppercase;
+	}
 
-	canvas {
-		padding: 0;
-		margin: 0 auto;
-		display: block;
+	.weather-clock-container {
+		box-sizing: border-box;
+		width: 100%;
+		height: 94vw;
+		margin-bottom: 3vw;
+
+		canvas {
+			padding: 0;
+			margin: 0 auto;
+			display: block;
+		}
+	}
+
+	.bottom-section-container {
+		width: 100%;
+		box-sizing: border-box;
+
+		.last-updated-container {
+			text-transform: uppercase;
+			font-size: 0.6em;
+			margin-bottom: 1.5vw;
+		}
 	}
 }
 
-.bottom-section-container {
-	width: 100%;
-	height: 31.25%;
-	box-sizing: border-box;
-	padding-top: 2%;
+@media only screen and (min-width: 481px) {
 
-	.last-updated-container {
+	.location-text-container {
+		height: 6.25%;
 		text-transform: uppercase;
-		font-size: 0.7em;
-		margin-bottom: 1%;
+	}
+
+	.weather-clock-container {
+		box-sizing: border-box;
+		width: 100%;
+		height: 62.5%;
+
+		canvas {
+			padding: 0;
+			margin: 0 auto;
+			display: block;
+		}
+	}
+
+	.bottom-section-container {
+		width: 100%;
+		height: 31.25%;
+		box-sizing: border-box;
+		padding-top: 2%;
+
+		.last-updated-container {
+			text-transform: uppercase;
+			font-size: 0.7em;
+			margin-bottom: 1%;
+		}
 	}
 }
 
@@ -39,7 +74,6 @@
 		height: 100%;
 		display: table-cell;
 		vertical-align: middle;
-		text-align: center;
 	}
 }
 

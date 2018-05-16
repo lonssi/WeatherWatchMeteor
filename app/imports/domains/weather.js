@@ -104,7 +104,6 @@ export const WeatherController = {
 	getLocation: function() { return currentLocation.get() },
 	queryWeatherInformation,
 	locationQuery,
-	getWeatherData: function() {
-		return weatherData.get();
-	}
+	getWeatherData: function() { return weatherData.get(); },
+	resetStatus: function() { weatherStatus.set(null); }
 }

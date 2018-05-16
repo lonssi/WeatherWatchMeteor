@@ -476,6 +476,9 @@ if (Meteor.isClient) {
 			case "DOT_MENU_CLOSE_BUTTON_CLICKED":
 				settingsOpen.set(false);
 				break;
+			case "NOTIFICATION_DIALOG_CLOSED":
+				WeatherController.resetStatus();
+				break;
 		}
 	});
 }
