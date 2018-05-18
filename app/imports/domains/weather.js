@@ -20,7 +20,6 @@ var updateWeatherData = function(data) {
 		return;
 	}
 
-	weatherStatus.set(null);
 	weatherData.set(data);
 	currentLocation.set(data.location);
 	localStorage.location = data.location;
@@ -48,7 +47,6 @@ var queryWeatherInformation = function(location) {
 	}
 
 	stopWeatherPolling();
-	weatherStatus.set(null);
 	weatherLoading.set(true);
 
 	Meteor.call("getWeatherInformation", location, function(error, result) {
@@ -65,7 +63,6 @@ var queryWeatherInformation = function(location) {
 }
 
 var locationQuery = function() {
-	weatherStatus.set(null);
 	weatherLoading.set(true);
 	navigator.geolocation.getCurrentPosition(locationReceived, locationFailed);
 }
