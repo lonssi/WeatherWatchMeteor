@@ -1,12 +1,14 @@
 
 ## WeatherWatch
 
-### What is WeatherWatch
+### What is WeatherWatch?
 
 WeatherWatch is a web application that displays weather forecast information in an analog clock face format.
 WeatherWatch is built with Meteor.js and the front-end is implemented with React.js.
 
 The weather forecast information is obtained using the Open Data API by the Finnish Meteorological Institute (https://en.ilmatieteenlaitos.fi/open-data).
+
+The weather icons are originally from https://github.com/fmidev/opendata-resources/tree/master/symbols. Night version for each icon have been created.
 
 WeatherWatch is running in https://weatherwatch.tech
 
