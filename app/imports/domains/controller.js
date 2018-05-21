@@ -216,7 +216,7 @@ var setForecastTimezoneMode = function(value) {
 		localStorage.forecastTimezone = clockSettings.get('forecastTimezone');
 	} else {
 		value = Helpers.toBoolean(value);
-		if (value) {
+		if (_.isBoolean(value)) {
 			clockSettings.set('forecastTimezone', value);
 			localStorage.forecastTimezone = value;
 		} else {
@@ -231,7 +231,7 @@ var setGradientMode = function(value) {
 		localStorage.gradientMode = clockSettings.get('gradientMode');
 	} else {
 		value = Helpers.toBoolean(value);
-		if (value) {
+		if (_.isBoolean(value)) {
 			clockSettings.set('gradientMode', value);
 			localStorage.gradientMode = value;
 		} else {
@@ -260,7 +260,7 @@ var setSecondHand = function(value) {
 		localStorage.secondHand = clockSettings.get('secondHand');
 	} else {
 		value = Helpers.toBoolean(value);
-		if (value) {
+		if (_.isBoolean(value)) {
 			clockSettings.set('secondHand', value);
 			localStorage.secondHand = value;
 		} else {
