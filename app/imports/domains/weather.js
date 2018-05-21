@@ -12,7 +12,7 @@ var checkVersion = function(data) {
 	if (data.version !== Constants.version) {
 		location.reload();
 	}
-}
+};
 
 var updateWeatherData = function(data) {
 
@@ -23,21 +23,31 @@ var updateWeatherData = function(data) {
 	weatherData.set(data);
 	currentLocation.set(data.location);
 	localStorage.location = data.location;
-}
+};
+
+var dataIsOutdated = function() {
+	const data = weatherData.get();
+	if (data) {
+		const diff = new Date() - data.time;
+		return diff >= Constants.hourEpochs;
+	} else {
+		return true;
+	}
+};
 
 var startWeatherPolling = function() {
 	weatherUpdateInterval = setInterval(function() {
-		if (new Date() - weatherData.get().time >= Constants.hourEpochs) {
+		if (dataIsOutdated()) {
 			queryWeatherInformation(currentLocation.get());
 		}
 	}, 5000);
-}
+};
 
 var stopWeatherPolling = function() {
 	if (weatherUpdateInterval) {
 		clearInterval(weatherUpdateInterval);
 	}
-}
+};
 
 var queryWeatherInformation = function(location) {
 
@@ -53,6 +63,9 @@ var queryWeatherInformation = function(location) {
 		weatherLoading.set(false);
 		if (error) {
 			weatherStatus.set(error.error);
+			if (dataIsOutdated()) {
+				weatherData.set(null);
+			}
 		}
 		if (result) {
 			checkVersion(result);
@@ -60,12 +73,12 @@ var queryWeatherInformation = function(location) {
 			startWeatherPolling();
 		}
 	});
-}
+};
 
 var locationQuery = function() {
 	weatherLoading.set(true);
 	navigator.geolocation.getCurrentPosition(locationReceived, locationFailed);
-}
+};
 
 var locationReceived = function(position) {
 	const location = {
@@ -73,7 +86,7 @@ var locationReceived = function(position) {
 		"longitude": position.coords.longitude
 	};
 	queryWeatherInformation(location);
-}
+};
 
 var locationFailed = function(error) {
 	weatherLoading.set(false);
@@ -93,7 +106,7 @@ var locationFailed = function(error) {
 			break;
 	}
 	weatherStatus.set(errorMessage);
-}
+};
 
 export const WeatherController = {
 	getStatus: function() { return weatherStatus.get(); },
@@ -103,4 +116,4 @@ export const WeatherController = {
 	locationQuery,
 	getWeatherData: function() { return weatherData.get(); },
 	resetStatus: function() { weatherStatus.set(null); }
-}
+};

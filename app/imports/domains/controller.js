@@ -305,7 +305,7 @@ var getCachedData = function() {
 			});
 		}, 1);
 	}
-}
+};
 
 var images = {};
 var imagesReady = ReactiveVar(false);
