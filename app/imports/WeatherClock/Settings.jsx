@@ -1,5 +1,6 @@
 import React from 'react';
 import {Controller} from '../domains/controller.js';
+import {Colors} from '../../lib/colors.js';
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
 import Toggle from 'material-ui/Toggle';
@@ -19,7 +20,7 @@ export const SettingsMenu = React.createClass({
 			availableUnitModes: Controller.getAvailableUnitModes(),
 			availableClockSizes: Controller.getAvailableClockSizes(),
 			colorTheme: Controller.getColorTheme(),
-			colorThemes: Controller.getColorThemes(),
+			colorThemes: Colors.getColorThemes(),
 			hue: Controller.getHue()
 		};
 	},
