@@ -4,6 +4,7 @@ import {Constants} from '../../lib/constants.js';
 import {Controller} from '../domains/controller.js';
 import {MoonPainter} from './MoonPainter.js';
 import './ArcGradient.js';
+import chroma from 'chroma-js';
 
 
 export class WeatherClockCanvas {
@@ -71,6 +72,8 @@ export class WeatherClockCanvas {
 		} else {
 			this.tzOffset = 0;
 		}
+
+		this.drawWeatherBackground();
 
 		if (updateAll) {
 			this.drawStaticElementsToCache();
@@ -198,20 +201,8 @@ export class WeatherClockCanvas {
 		this.ctxBg.textAlign = "center";
 
 		this.drawClockFace();
-		this.drawWeatherBackground();
 		this.drawCelestialObjectIndicators();
 		this.drawDataModeContent();
-
-		this.drawIndicator(
-			this.ctxBg,
-			this.colorTheme.accent.light,
-			this.canvas.height * 0.0061525,
-			(this.date.getHours() + this.tzOffset - 0.5) * 30,
-			[
-				this.rimCenterRadius + this.arcWidthInner * 0.45,
-				this.rimCenterRadius - this.arcWidthInner * 0.45
-			]
-		);
 	}
 
 	drawClockFace() {
@@ -221,6 +212,7 @@ export class WeatherClockCanvas {
 		this.ctxBg.arc(this.center.x, this.center.y, this.clockRadius, 0, 2*Math.PI);
 		this.ctxBg.fillStyle = this.colorTheme.bg.clock;
 		this.ctxBg.fill();
+		this.ctxBg.closePath();
 
 		// Text settings
 		this.ctxBg.font = this.unit * 1.25 + "px " + this.fontFamily;
@@ -268,11 +260,47 @@ export class WeatherClockCanvas {
 	}
 
 	drawWeatherBackground() {
-		this.ctxBg.fillStyle = this.colorTheme.bg.dark;
-		this.ctxBg.beginPath()
-		this.ctxBg.arc(this.center.x, this.center.y, this.bound / 2, 0, Math.PI * 2, false);
-		this.ctxBg.arc(this.center.x, this.center.y, this.innerRadius, 0, Math.PI * 2, true);
-		this.ctxBg.fill();
+
+		// Draw the arc
+		this.ctx.fillStyle = this.colorTheme.bg.dark;
+		this.ctx.beginPath()
+		this.ctx.arc(this.center.x, this.center.y, this.bound / 2, 0, Math.PI * 2, false);
+		this.ctx.arc(this.center.x, this.center.y, this.innerRadius, 0, Math.PI * 2, true);
+		this.ctx.fill();
+
+		const minutes = this.date.getMinutes();
+		const seconds = this.date.getSeconds();
+		const time = minutes / 60 + seconds / 3600;
+
+		const ceil = 0.1;
+		const alpha1 = Helpers.remapValue(1 - time, [0, 1], [0, ceil]);
+		const alpha2 = Helpers.remapValue(time, [0, 1], [0, ceil]);
+
+		const baseColor = this.colorTheme.bg.highlight;
+		const color1 = chroma(baseColor).alpha(alpha1).css();
+		const color2 = chroma(baseColor).alpha(alpha2).css();
+
+		const hours = this.date.getHours() + this.tzOffset;
+		const span = 30 / 180 * Math.PI;
+		const angle = (hours % 12) / 6 * Math.PI - span / 2 - Math.PI / 2;
+		const a1 = angle;
+		const a2 = a1 + span;
+		const a3 = a2 + span;
+
+		this.ctx.lineWidth = this.arcWidth;
+		this.ctx.lineCap = 'butt';
+
+		this.ctx.beginPath();
+		this.ctx.arc(this.center.x, this.center.y, this.rimCenterRadius, a1, a2);
+		this.ctx.strokeStyle = color1;
+		this.ctx.stroke();
+		this.ctx.closePath();
+
+		this.ctx.beginPath();
+		this.ctx.arc(this.center.x, this.center.y, this.rimCenterRadius, a2, a3);
+		this.ctx.strokeStyle = color2;
+		this.ctx.stroke();
+		this.ctx.closePath();
 	}
 
 	drawCelestialObjectIndicators() {
@@ -836,6 +864,8 @@ export class WeatherClockCanvas {
 		this.ctxBg.strokeStyle = this.colorTheme.bg.dark;
 
 		const o = 0.05;
+
+		this.ctxBg.globalCompositeOperation = "destination-out";
 
 		this.ctxBg.beginPath();
 		this.ctxBg.arc(this.center.x, this.center.y, location + (width + widthExtra), startAngle - o, endAngle + o);

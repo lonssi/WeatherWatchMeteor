@@ -2,7 +2,6 @@ import {WeatherController} from './weather.js';
 import {Colors} from '../../lib/colors.js';
 import {Helpers} from '../../lib/helpers.js';
 import xss from 'xss';
-import chroma from 'chroma-js';
 
 
 var settingsOpen = ReactiveVar(false);
@@ -14,6 +13,7 @@ const colorThemeDark = {
 		light: '#475663',
 		dark: '#3E4B57',
 		darker: '#37434C',
+		highlight: '#FFFFFF',
 		clock: '#FFFFFF'
 	},
 	accent: {
@@ -46,6 +46,7 @@ const colorThemeLight = {
 		light: '#FFFFFF',
 		dark: '#EEEEEE',
 		darker: '#CBCBCB',
+		highlight: '#000000',
 		clock: '#FFFFFF'
 	},
 	accent: {
