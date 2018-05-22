@@ -23,11 +23,17 @@ export const WeatherClock = React.createClass({
 	},
 
 	clearWeatherClock() {
-		clearInterval(this.clockUpdateInterval);
-		this.weatherclock.clear();
-		this.canvasIsInitialized = false;
-		this.canvasReadyForInitialization = true;
-		this.weatherclock = null;
+
+		if (this.clockUpdateInterval) {
+			clearInterval(this.clockUpdateInterval);
+		}
+
+		if (this.weatherclock) {
+			this.weatherclock.clear();
+			this.canvasIsInitialized = false;
+			this.canvasReadyForInitialization = true;
+			this.weatherclock = null;
+		}
 	},
 
 	clockUpdate(flag) {
@@ -35,7 +41,7 @@ export const WeatherClock = React.createClass({
 		// the data may have become outdated
 		if (Helpers.dataIsOutdated(this.data.weatherData, false)) {
 			this.clearWeatherClock();
-			WeatherController.resetWeather();
+			WeatherController.resetWeather(true);
 		} else {
 			this.weatherclock.update(flag);
 		}
@@ -97,7 +103,7 @@ export const WeatherClock = React.createClass({
 			this.data.colorTheme
 		);
 
-		this.weatherclock.update(true);
+		this.clockUpdate(true);
 
 		var self = this;
 		this.clockUpdateInterval = setInterval(function() {

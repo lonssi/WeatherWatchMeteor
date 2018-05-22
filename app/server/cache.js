@@ -1,4 +1,6 @@
 import {Constants} from '../lib/constants.js';
+import {Helpers} from '../lib/helpers.js';
+
 
 /**
  * Stores queried weather information to a cache
@@ -59,11 +61,10 @@ class WeatherCache {
 
 		const weatherData = this.weatherCache[location];
 		if (weatherData) {
-			const dateDiff = date - weatherData.time;
-			if (dateDiff < Constants.hourEpochs) {
-				return weatherData;
-			} else {
+			if (Helpers.dataIsOutdated(weatherData, true)) {
 				delete this.weatherCache[location];
+			} else {
+				return weatherData;
 			}
 		}
 

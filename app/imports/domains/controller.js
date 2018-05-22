@@ -298,12 +298,7 @@ var getCachedData = function() {
 	// Check for cached location
 	value = xss(localStorage.location);
 	if (value && _.isString(value)) {
-		setTimeout(function() {
-				Dispatcher.dispatch({
-				actionType: "SEARCH_BUTTON_CLICKED",
-				data: value
-			});
-		}, 1);
+		WeatherController.queryWeatherInformation(value);
 	}
 };
 

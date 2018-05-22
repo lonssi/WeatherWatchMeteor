@@ -66,13 +66,11 @@ export const Helpers = {
 	},
 
 	dataIsOutdated: function(data, strict) {
-
 		if (!data) {
 			return true;
 		}
-
-		const threshold = (strict) ? Constants.hourEpochs : 12 * Constants.hourEpochs;
 		const diff = new Date() - data.time;
+		const threshold = (strict) ? Constants.hourEpochs : 12 * Constants.hourEpochs;
 		return diff >= threshold;
 	},
 

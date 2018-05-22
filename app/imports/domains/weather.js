@@ -20,8 +20,10 @@ var clearWeatherData = function() {
 	weatherData.set(null);
 };
 
-var resetWeather = function() {
-	clearWeatherData();
+var resetWeather = function(reset) {
+	if (reset) {
+		clearWeatherData();
+	}
 	queryWeatherInformation(currentLocation.get());
 };
 
@@ -40,7 +42,7 @@ var startWeatherPolling = function() {
 	stopWeatherPolling();
 	weatherUpdateInterval = setInterval(function() {
 		if (Helpers.dataIsOutdated(weatherData.get(), true)) {
-			resetWeather();
+			resetWeather(false);
 		}
 	}, 5000);
 };
