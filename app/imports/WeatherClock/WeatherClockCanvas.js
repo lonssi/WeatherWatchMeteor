@@ -310,6 +310,29 @@ export class WeatherClockCanvas {
 		const events = this.getCelestialEvents(now, rawEvents);
 		const n = events.length;
 
+		// SunCalc may have missing rise/set events when the sun is
+		// above or below the horizon for a long time.
+		// Check if the sun altitude conforms with the rise/set events
+		// and apply a correction if not.
+		if (n === 2) {
+			var weatherObject;
+			for (var i = 0; i < this.weatherData.values.length; i++) {
+				weatherObject = this.weatherData.values[i];
+				let time = weatherObject.time;
+				if (events[0].time <= time && time <= events[1].time) {
+					break;
+				}
+			}
+			if (weatherObject) {
+				const key = (dataMode === 'moon') ? "moonPosition" : "sunPosition";
+				const up = weatherObject[key].altitude >= 0
+				if (up !== events[0].up) {
+					events[0].up = !events[0].up;
+					events[1].up = !events[1].up;
+				}
+			}
+		}
+
 		for (var i = 0; i < n; i++) {
 
 			if (!((i !== 0) ^ (i !== n - 1))) {
