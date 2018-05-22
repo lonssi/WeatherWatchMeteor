@@ -275,7 +275,7 @@ export class WeatherClockCanvas {
 		const location = this.rimCenterRadius;
 		const width = this.arcWidth / 2;
 
-		const lightness = (this.colorTheme.id === 'dark') ? 0.0275 : 0.03;
+		const lightness = (this.colorTheme.id === 'dark') ? 0.0275 : 0.0325;
 		const color1 = this.colorTheme.bg.dark;
 		const color2 = chroma(color1).set('hsl.l', '+' + lightness).css();
 		colors = [color2, color1];
@@ -476,7 +476,7 @@ export class WeatherClockCanvas {
 				const weatherObject = weatherDataArray[index];
 				const measure = weatherObject[dataType.key];
 				const color = dataType.colorFunction(measure);
-				const colorFinal = (color) ? color : this.colorTheme.bg.light;
+				const colorFinal = (color) ? color : this.colorTheme.bg.empty;
 				colors.push(colorFinal);
 			}
 		}

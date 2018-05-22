@@ -9,7 +9,8 @@ const colorThemeDark = {
 		light: '#485865',
 		dark: '#3E4B57',
 		darker: '#37434C',
-		clock: '#FFFFFF'
+		clock: '#FFFFFF',
+		empty: '#646B71'
 	},
 	accent: {
 		light: '#E6944C',
@@ -39,9 +40,10 @@ const colorThemeLight = {
 	name: 'Light',
 	bg: {
 		light: '#FFFFFF',
-		dark: '#EEEEEE',
-		darker: '#C6C6C6',
-		clock: '#FFFFFF'
+		dark: '#EAEAEA',
+		darker: '#CBCBCB',
+		clock: '#FFFFFF',
+		empty: '#D1D1D1'
 	},
 	accent: {
 		light: '#6A859A',
