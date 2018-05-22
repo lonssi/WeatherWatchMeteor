@@ -61,6 +61,17 @@ export const Helpers = {
 			date.getSeconds() * Constants.secondEpochs - date.getMilliseconds();
 	},
 
+	dataIsOutdated: function(data, strict) {
+
+		if (!data) {
+			return true;
+		}
+
+		const threshold = (strict) ? Constants.hourEpochs : 12 * Constants.hourEpochs;
+		const diff = new Date() - data.time;
+		return diff >= threshold;
+	},
+
 	remapValue: function(value, srcRange, trgRange) {
 		value = clamp(value, srcRange[0], srcRange[1]);
 		return (value - srcRange[0]) / (srcRange[1] - srcRange[0]) *

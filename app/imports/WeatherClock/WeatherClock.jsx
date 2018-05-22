@@ -3,6 +3,7 @@ import {WeatherController} from '../domains/weather.js';
 import {Controller} from '../domains/controller.js';
 import {ButtonRow} from './ButtonRow.jsx';
 import {WeatherClockCanvas} from './WeatherClockCanvas.js';
+import {Helpers} from '../../lib/helpers.js';
 
 
 export const WeatherClock = React.createClass({
@@ -22,11 +23,22 @@ export const WeatherClock = React.createClass({
 	},
 
 	clearWeatherClock() {
-		clearInterval(this.clockupdate);
+		clearInterval(this.clockUpdateInterval);
 		this.weatherclock.clear();
 		this.canvasIsInitialized = false;
 		this.canvasReadyForInitialization = true;
 		this.weatherclock = null;
+	},
+
+	clockUpdate(flag) {
+		// If the application resumes after sleep
+		// the data may have become outdated
+		if (Helpers.dataIsOutdated(this.data.weatherData, false)) {
+			this.clearWeatherClock();
+			WeatherController.resetWeather();
+		} else {
+			this.weatherclock.update(flag);
+		}
 	},
 
 	componentWillUpdate() {
@@ -35,11 +47,11 @@ export const WeatherClock = React.createClass({
 			this.initializeCanvas();
 		}
 
-		if (this.weatherclock) {
+		if (this.weatherclock && this.data.weatherData) {
 			this.weatherclock.setSettings(this.data.clockSettings);
 			this.weatherclock.updateWeatherData(this.data.weatherData);
 			this.weatherclock.updateColorTheme(this.data.colorTheme);
-			this.weatherclock.update(true);
+			this.clockUpdate(true);
 		}
 
 		if (this.weatherclock && !this.data.weatherData) {
@@ -67,7 +79,7 @@ export const WeatherClock = React.createClass({
 
 	resize() {
 		if (this.weatherclock) {
-			this.weatherclock.update(true);
+			this.clockUpdate(true);
 		}
 	},
 
@@ -88,8 +100,8 @@ export const WeatherClock = React.createClass({
 		this.weatherclock.update(true);
 
 		var self = this;
-		this.clockupdate = setInterval(function() {
-			self.weatherclock.update(false);
+		this.clockUpdateInterval = setInterval(function() {
+			self.clockUpdate(false);
 		}, 100);
 	},
 

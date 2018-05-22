@@ -46,6 +46,10 @@ export class WeatherClockCanvas {
 
 	update(updateAll) {
 
+		if (!this.weatherData) {
+			return;
+		}
+
 		this.date = new Date();
 
 		if (!updateAll) {

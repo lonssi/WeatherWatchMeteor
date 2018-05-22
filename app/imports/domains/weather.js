@@ -1,5 +1,7 @@
 import {Meteor} from 'meteor/meteor';
 import {Constants} from '../../lib/constants.js';
+import {Helpers} from '../../lib/helpers.js';
+
 
 var currentLocation = new ReactiveVar(null);
 var weatherData = new ReactiveVar(null);
@@ -14,6 +16,15 @@ var checkVersion = function(data) {
 	}
 };
 
+var clearWeatherData = function() {
+	weatherData.set(null);
+};
+
+var resetWeather = function() {
+	clearWeatherData();
+	queryWeatherInformation(currentLocation.get());
+};
+
 var updateWeatherData = function(data) {
 
 	if (!data) {
@@ -25,20 +36,11 @@ var updateWeatherData = function(data) {
 	localStorage.location = data.location;
 };
 
-var dataIsOutdated = function() {
-	const data = weatherData.get();
-	if (data) {
-		const diff = new Date() - data.time;
-		return diff >= Constants.hourEpochs;
-	} else {
-		return true;
-	}
-};
-
 var startWeatherPolling = function() {
+	stopWeatherPolling();
 	weatherUpdateInterval = setInterval(function() {
-		if (dataIsOutdated()) {
-			queryWeatherInformation(currentLocation.get());
+		if (Helpers.dataIsOutdated(weatherData.get(), true)) {
+			resetWeather();
 		}
 	}, 5000);
 };
@@ -63,8 +65,8 @@ var queryWeatherInformation = function(location) {
 		weatherLoading.set(false);
 		if (error) {
 			weatherStatus.set(error.error);
-			if (dataIsOutdated()) {
-				weatherData.set(null);
+			if (Helpers.dataIsOutdated(weatherData.get(), true)) {
+				clearWeatherData();
 			}
 		}
 		if (result) {
@@ -114,6 +116,7 @@ export const WeatherController = {
 	getLocation: function() { return currentLocation.get() },
 	queryWeatherInformation,
 	locationQuery,
+	resetWeather,
 	getWeatherData: function() { return weatherData.get(); },
 	resetStatus: function() { weatherStatus.set(null); }
 };
