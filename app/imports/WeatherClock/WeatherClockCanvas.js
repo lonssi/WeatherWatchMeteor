@@ -311,21 +311,29 @@ export class WeatherClockCanvas {
 		const n = events.length;
 
 		// SunCalc may have missing rise/set events when the sun is
-		// above or below the horizon for a long time.
+		// above or below the horizon for an extended period of time.
 		// Check if the sun altitude conforms with the rise/set events
 		// and apply a correction if not.
 		if (n === 2) {
+			// Find the weatherObject closest to the middle of the event span
 			var weatherObject;
+			var minDiff = Infinity;
+			var middleTime = new Date((events[1].time - events[0].time) / 2 + events[0].time.getTime());
 			for (var i = 0; i < this.weatherData.values.length; i++) {
-				weatherObject = this.weatherData.values[i];
-				let time = weatherObject.time;
+				let wo = this.weatherData.values[i];
+				let time = wo.time;
 				if (events[0].time <= time && time <= events[1].time) {
-					break;
+					let diff = Math.abs(middleTime - time);
+					if (diff < minDiff) {
+						weatherObject = wo;
+						minDiff = diff;
+					}
 				}
 			}
 			if (weatherObject) {
 				const key = (dataMode === 'moon') ? "moonPosition" : "sunPosition";
-				const up = weatherObject[key].altitude >= 0
+				const up = weatherObject[key].altitude >= 0;
+				// Invert the events in the case of mismatch
 				if (up !== events[0].up) {
 					events[0].up = !events[0].up;
 					events[1].up = !events[1].up;
