@@ -6,10 +6,9 @@ const colorThemeDark = {
 	id: 'dark',
 	name: 'Dark',
 	bg: {
-		light: '#475663',
+		light: '#485865',
 		dark: '#3E4B57',
 		darker: '#37434C',
-		highlight: '#FFFFFF',
 		clock: '#FFFFFF'
 	},
 	accent: {
@@ -30,7 +29,7 @@ const colorThemeDark = {
 	},
 	static: {
 		moon_bright_up: '#A1B1B3',
-		moon_bright_down: '#475663',
+		moon_bright_down: '#485865',
 		moon_dark: '#37434C'
 	}
 };
@@ -41,8 +40,7 @@ const colorThemeLight = {
 	bg: {
 		light: '#FFFFFF',
 		dark: '#EEEEEE',
-		darker: '#CBCBCB',
-		highlight: '#000000',
+		darker: '#C6C6C6',
 		clock: '#FFFFFF'
 	},
 	accent: {

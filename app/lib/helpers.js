@@ -19,6 +19,10 @@ export const Helpers = {
 		}
 	},
 
+	numberLength: function(value) {
+		return (Math.abs(parseInt(value))).toString().length;
+	},
+
 	hideVirtualKeyboard: function() {
 		if (
 			document &&
