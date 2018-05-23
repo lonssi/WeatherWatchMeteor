@@ -287,7 +287,8 @@ export class WeatherClockCanvas {
 		const thickness = this.unit;
 		const location = this.clockRadius + this.unit / 2;
 
-		const upColor = (this.settings.dataMode.id === 'moon') ? '#A1B1B3' : '#FABA25';
+		const dataMode = this.settings.dataMode.id;
+		const upColor = (dataMode === 'moon') ? '#A1B1B3' : '#FABA25';
 
 		this.ctxBg.lineWidth = thickness;
 
@@ -297,7 +298,6 @@ export class WeatherClockCanvas {
 			now = new Date(now.getTime() + 12 * Constants.hourEpochs);
 		}
 
-		const dataMode = this.settings.dataMode.id;
 		const rawEvents = (dataMode !== 'moon') ? this.weatherData.sunEvents : this.weatherData.moonEvents;
 		const events = this.getCelestialEvents(now, rawEvents);
 		const n = events.length;
@@ -593,6 +593,7 @@ export class WeatherClockCanvas {
 			const weatherObject = weatherDataArray[i];
 			const temperature = weatherObject.Temperature;
 			const unitMode = this.settings.unitMode.id;
+			const tempInt = parseInt(Helpers.floatToString(temperature, 0));
 			const tempShow = (unitMode === "si") ? temperature : temperature * (9/5) + 32;
 			const angle = ((i + hours) * 30) * Math.PI/180;
 
@@ -602,7 +603,7 @@ export class WeatherClockCanvas {
 			this.ctxBg.rotate(angle);
 			this.ctxBg.translate(0, -this.rimCenterRadius);
 			this.ctxBg.rotate(-angle);
-			this.ctxBg.fillStyle = (temperature >= 0) ? this.colorTheme.text.data : '#FFF';
+			this.ctxBg.fillStyle = (tempInt > 0) ? this.colorTheme.text.data : '#FFF';
 			this.ctxBg.fillText(Helpers.floatToString(tempShow, 0) + "°", textOffset, 0);
 
 			this.ctxBg.restore();
