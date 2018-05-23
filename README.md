@@ -8,7 +8,7 @@ WeatherWatch is built with Meteor.js and the front-end is implemented with React
 
 The weather forecast information is obtained using the Open Data API by the Finnish Meteorological Institute (https://en.ilmatieteenlaitos.fi/open-data).
 
-The weather icons are originally from https://github.com/fmidev/opendata-resources/tree/master/symbols. Night version for each icon have been created.
+The weather icons are originally from https://github.com/fmidev/opendata-resources/tree/master/symbols. A night version for each icon has been created and some small tweaks have been applied to achieve better symmetry.
 
 WeatherWatch is running in https://weatherwatch.tech
 
