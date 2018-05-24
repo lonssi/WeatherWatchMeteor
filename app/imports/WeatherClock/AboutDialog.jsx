@@ -34,6 +34,12 @@ export const AboutDialog = React.createClass({
 			/>
 		];
 
+		const link = (
+			<a href="https://github.com/lonssi/WeatherWatch">
+				GitHub
+			</a>
+		);
+
 		return (
 			<Dialog
 				title="About"
@@ -48,10 +54,7 @@ export const AboutDialog = React.createClass({
 					Weather data provided by the Finnish Meteorological Institute.
 					<br/>
 					<br/>
-					WeatherWatch is open source: &nbsp;
-					<a href="https://github.com/lonssi/WeatherWatch">
-						GitHub
-					</a>
+					WeatherWatch is open source: {link}
 				</p>
 			</Dialog>
 		);
