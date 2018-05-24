@@ -137,8 +137,8 @@ export class WeatherClockCanvas {
 		const minutes = this.date.getMinutes();
 		const seconds = this.date.getSeconds();
 
-		const hourIndicatorLength = this.clockRadius * 0.475;
-		const minuteIndicatorLength = hourIndicatorLength * 1.618;
+		const minuteIndicatorLength = this.clockRadius * 0.76855;
+		const hourIndicatorLength =  minuteIndicatorLength / 1.5;
 
 		this.drawIndicator(
 			this.ctx,
@@ -151,7 +151,7 @@ export class WeatherClockCanvas {
 		this.drawIndicator(
 			this.ctx,
 			this.colorTheme.accent.light,
-			this.clockRadius * 0.022,
+			Math.max(1, this.clockRadius * 0.022),
 			(minutes + seconds/60) * 6,
 			[0, minuteIndicatorLength]
 		);
@@ -160,7 +160,7 @@ export class WeatherClockCanvas {
 			this.drawIndicator(
 				this.ctx,
 				this.colorTheme.accent.light,
-				this.clockRadius * 0.014,
+				Math.max(1, this.clockRadius * 0.012),
 				seconds * 6,
 				[0, minuteIndicatorLength]
 			);
