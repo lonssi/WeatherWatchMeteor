@@ -16,8 +16,6 @@ export const WeatherClock = React.createClass({
 			weatherData: WeatherController.getWeatherData(),
 			location: WeatherController.getLocation(),
 			clockSettings: Controller.getClockSettings(),
-			availableDataModes: Controller.getAvailableDataModes(),
-			settingsOpen: Controller.settingsOpen(),
 			colorTheme: Controller.getColorTheme()
 		};
 	},
@@ -124,7 +122,6 @@ export const WeatherClock = React.createClass({
 
 		const updatedText = "last updated: " + updateTime.toLocaleString('en-GB', tz) + " " +
 			"UTC" + prefix + tzHours;
-		const disclaimerText = "weather data by finnish meteorological institute";
 
 		const styles = {
 			color: colorTheme.text.dark
@@ -134,15 +131,8 @@ export const WeatherClock = React.createClass({
 			<div className="bottom-section-container">
 				<div className="last-updated-container" style={styles}>
 					{updatedText}
-					<br/>
-					{disclaimerText}
 				</div>
-				<ButtonRow
-					settingsOpen={this.data.settingsOpen}
-					clockSettings={this.data.clockSettings}
-					availableDataModes={this.data.availableDataModes}
-					colorTheme={this.data.colorTheme}
-				/>
+				<ButtonRow/>
 			</div>
 		);
 	},

@@ -10,6 +10,8 @@ body {
 	margin: 0 !important;
 	padding: 0 !important;
 	font-size: 1em;
+	color: var(--text-color);
+	background-color: var(--background-color);
 }
 
 #react-root {
@@ -36,4 +38,13 @@ body {
 
 .align-right {
 	text-align: right;
+}
+
+a {
+	color: var(--link-color);
+	text-decoration: none;
+}
+
+a:hover {
+	color: var(--link-hover-color);
 }

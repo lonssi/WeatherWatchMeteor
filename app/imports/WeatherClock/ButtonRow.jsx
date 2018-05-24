@@ -3,9 +3,21 @@ import FlatButton from 'material-ui/FlatButton';
 import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
+import {Controller} from '../domains/controller.js';
 
 
 export const ButtonRow = React.createClass({
+
+	mixins: [ReactMeteorData],
+	getMeteorData: function() {
+		return {
+			clockSettings: Controller.getClockSettings(),
+			availableDataModes: Controller.getAvailableDataModes(),
+			settingsOpen: Controller.settingsOpen(),
+			aboutDialogOpen: Controller.aboutDialogOpen(),
+			colorTheme: Controller.getColorTheme()
+		};
+	},
 
 	getInitialState() {
 		return {
@@ -33,6 +45,12 @@ export const ButtonRow = React.createClass({
 		});
 	},
 
+	aboutDialogButtonClick() {
+		Dispatcher.dispatch({
+			actionType: "ABOUT_DIALOG_OPEN_BUTTON_CLICKED",
+		});
+	},
+
 	handleDataMenuTouchTap(event) {
 		// This prevents ghost click
 		event.preventDefault();
@@ -50,9 +68,10 @@ export const ButtonRow = React.createClass({
 
 	render() {
 
-		const settingsOpen = this.props.settingsOpen;
-		const clockSettings = this.props.clockSettings
-		const colorTheme = this.props.colorTheme;
+		const settingsOpen = this.data.settingsOpen;
+		const aboutDialogOpen = this.data.aboutDialogOpen;
+		const clockSettings = this.data.clockSettings
+		const colorTheme = this.data.colorTheme;
 
 		const futureBtnClasses = classNames({
 			"fa": true,
@@ -64,14 +83,18 @@ export const ButtonRow = React.createClass({
 			"fa-ellipsis-v": true
 		});
 
-		const dotMenuBtnStyle = {
+		const smallButtonStyle = {
 			width: '36px',
 			minWidth: '36px'
 		};
 
-		if (settingsOpen) {
-			_.extend(dotMenuBtnStyle, { backgroundColor: colorTheme.bg.dark });
-		}
+		const dotMenuBtnStyle = (settingsOpen)
+			? _.assign({}, smallButtonStyle, { backgroundColor: colorTheme.bg.dark })
+			: smallButtonStyle;
+
+		const aboutDialogBtnStyle = (aboutDialogOpen)
+			? _.assign({}, smallButtonStyle, { backgroundColor: colorTheme.bg.dark })
+			: smallButtonStyle;
 
 		const dataMenuButtonStyle = (this.state.dataMenuOpen) ?
 			{ backgroundColor: colorTheme.bg.dark } : {};
@@ -79,11 +102,14 @@ export const ButtonRow = React.createClass({
 		const futureButtonStyle = (clockSettings.futureMode) ?
 			{ backgroundColor: colorTheme.bg.dark } : {};
 
-		const dataModeItems = this.props.availableDataModes.map(function(item) {
+		const dataModeItems = this.data.availableDataModes.map(function(item) {
+
 			const itemClasses = classNames({
 				"menu-item-selected": item.id === clockSettings.dataMode.id
 			});
+
 			const buttonClasses = "fa " + item.icon;
+
 			const leftIcon = (
 				<div>
 					<div className="unit-icon-container">
@@ -129,6 +155,12 @@ export const ButtonRow = React.createClass({
 					icon={<i className={dotMenuBtnClasses} />}
 					onTouchTap={this.dotMenuButtonClick}
 					style={dotMenuBtnStyle}
+				/>
+				<FlatButton
+					label="?"
+					onTouchTap={this.aboutDialogButtonClick}
+					style={aboutDialogBtnStyle}
+					labelStyle={{ fontWeight: 'bold' }}
 				/>
 				<FlatButton
 					icon={<i className={futureBtnClasses} />}

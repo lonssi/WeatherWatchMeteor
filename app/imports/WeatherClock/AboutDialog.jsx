@@ -1,22 +1,23 @@
 import React from 'react';
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
-import {WeatherController} from '../domains/weather.js';
+import {Controller} from '../domains/controller.js';
 import {Constants} from '../../lib/constants.js';
 
 
-export const NotificationDialog = React.createClass({
+export const AboutDialog = React.createClass({
 
 	mixins: [ReactMeteorData],
 	getMeteorData: function() {
 		return {
-			weatherStatus: WeatherController.getStatus()
+			open: Controller.aboutDialogOpen(),
+			colorTheme: Controller.getColorTheme()
 		};
 	},
 
 	handleDialogClose() {
 		Dispatcher.dispatch({
-			actionType: "NOTIFICATION_DIALOG_CLOSED"
+			actionType: "ABOUT_DIALOG_CLOSE_BUTTON_CLICKED"
 		});
 	},
 
@@ -35,15 +36,23 @@ export const NotificationDialog = React.createClass({
 
 		return (
 			<Dialog
-				title="Error"
+				title="About"
 				actions={actions}
 				modal={false}
 				onRequestClose={this.handleDialogClose}
-				open={!!this.data.weatherStatus}
+				open={!!this.data.open}
 				contentStyle={dialogStyle}
 				autoScrollBodyContent={true}
 			>
-				{this.data.weatherStatus}
+				<p>
+					Weather data provided by the Finnish Meteorological Institute.
+					<br/>
+					<br/>
+					WeatherWatch is open source: &nbsp;
+					<a href="https://github.com/lonssi/WeatherWatch">
+						GitHub
+					</a>
+				</p>
 			</Dialog>
 		);
 	}

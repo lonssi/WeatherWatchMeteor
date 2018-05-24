@@ -5,6 +5,7 @@ import xss from 'xss';
 
 
 var settingsOpen = ReactiveVar(false);
+var aboutDialogOpen = ReactiveVar(false);
 
 var colorTheme = new ReactiveVar(null);
 var hue = new ReactiveVar(0);
@@ -407,6 +408,12 @@ if (Meteor.isClient) {
 			case "NOTIFICATION_DIALOG_CLOSED":
 				WeatherController.resetStatus();
 				break;
+			case "ABOUT_DIALOG_OPEN_BUTTON_CLICKED":
+				aboutDialogOpen.set(true);
+				break;
+			case "ABOUT_DIALOG_CLOSE_BUTTON_CLICKED":
+				aboutDialogOpen.set(false);
+				break;
 		}
 	});
 }
@@ -422,5 +429,6 @@ export const Controller = {
 	getAvailableClockSizes: function() { return availableClockSizes; },
 	getImages: function() { return images; },
 	imagesReady: function() { return imagesReady.get(); },
-	settingsOpen: function() { return settingsOpen.get() }
+	settingsOpen: function() { return settingsOpen.get(); },
+	aboutDialogOpen: function() { return aboutDialogOpen.get(); }
 }
