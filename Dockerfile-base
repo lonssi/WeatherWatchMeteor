@@ -47,7 +47,7 @@ RUN \
 
 # Install Meteor
 RUN curl https://install.meteor.com/?release=1.5.1 | sh
-ENV TOOL_NODE_FLAGS="--max-old-space-size=1024"
+ENV TOOL_NODE_FLAGS="--max-old-space-size=4096"
 
 # Install packages
 COPY app/package.json /app/package.json
