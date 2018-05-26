@@ -1,30 +1,24 @@
 import React from 'react';
+import {createContainer} from 'meteor/react-meteor-data';
 import {Controller} from '../domains/controller.js';
-import {NotificationDialog} from '../WeatherClock/NotificationDialog.jsx';
-import {AboutDialog} from '../WeatherClock/AboutDialog.jsx';
-import {SettingsMenu} from '../WeatherClock/Settings.jsx';
-import {TopElement} from '../WeatherClock/TopElement.jsx';
-import {WeatherClock} from '../WeatherClock/WeatherClock.jsx';
+import NotificationDialogContainer from '../WeatherClock/NotificationDialog.jsx';
+import AboutDialogContainer from '../WeatherClock/AboutDialog.jsx';
+import SettingsContainer from '../WeatherClock/Settings.jsx';
+import TopElementContainer from '../WeatherClock/TopElement.jsx';
+import WeatherClockContainer from '../WeatherClock/WeatherClock.jsx';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import chroma from 'chroma-js';
 
 var firstLoad = true;
 
-export const AppLayout = React.createClass({
-
-	mixins: [ReactMeteorData],
-	getMeteorData: function() {
-		return {
-			colorTheme: Controller.getColorTheme()
-		};
-	},
+export default class App extends React.Component {
 
 	componentDidMount() {
 		Dispatcher.dispatch({
 			actionType: "CLIENT_INITIALIZED"
 		});
-	},
+	}
 
 	setBodyStyles(colorTheme) {
 
@@ -48,11 +42,11 @@ export const AppLayout = React.createClass({
 				document.body.style["transition"] = "background-color 0.5s ease-out";
 			}, 500);
 		}
-	},
+	}
 
 	render() {
 
-		const colorTheme = this.data.colorTheme;
+		const colorTheme = this.props.colorTheme;
 
 		if (!colorTheme) {
 			return null;
@@ -75,15 +69,15 @@ export const AppLayout = React.createClass({
 		return (
 			<MuiThemeProvider muiTheme={muiTheme}>
 				<div className="content-container">
-					<NotificationDialog />
-					<AboutDialog />
-					<SettingsMenu />
-					<TopElement />
+					<NotificationDialogContainer/>
+					<AboutDialogContainer/>
+					<SettingsContainer/>
+					<TopElementContainer/>
 					<div className="bottom-container">
-						<WeatherClock />
+						<WeatherClockContainer/>
 					</div>
 				</div>
 			</MuiThemeProvider>
 		);
 	}
-});
+}

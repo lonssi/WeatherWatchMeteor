@@ -4,32 +4,31 @@ import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
 import {Controller} from '../domains/controller.js';
+import {withTracker} from 'meteor/react-meteor-data';
 
 
-export const ButtonRow = React.createClass({
+class ButtonRow extends React.Component {
 
-	mixins: [ReactMeteorData],
-	getMeteorData: function() {
-		return {
-			clockSettings: Controller.getClockSettings(),
-			availableDataModes: Controller.getAvailableDataModes(),
-			settingsOpen: Controller.settingsOpen(),
-			aboutDialogOpen: Controller.aboutDialogOpen(),
-			colorTheme: Controller.getColorTheme()
-		};
-	},
+	constructor(props) {
+		super(props);
 
-	getInitialState() {
-		return {
+		this.futureButtonClick = this.futureButtonClick.bind(this);
+		this.dataModeButtonClick = this.dataModeButtonClick.bind(this);
+		this.dotMenuButtonClick = this.dotMenuButtonClick.bind(this);
+		this.aboutDialogButtonClick = this.aboutDialogButtonClick.bind(this);
+		this.handleDataMenuTouchTap = this.handleDataMenuTouchTap.bind(this);
+		this.handleDataMenuRequestClose = this.handleDataMenuRequestClose.bind(this);
+
+		this.state = {
 			dataMenuOpen: false
 		};
-	},
+	}
 
 	futureButtonClick() {
 		Dispatcher.dispatch({
 			actionType: "FUTURE_BUTTON_CLICKED"
 		});
-	},
+	}
 
 	dataModeButtonClick(data) {
 		Dispatcher.dispatch({
@@ -37,19 +36,19 @@ export const ButtonRow = React.createClass({
 			data: data
 		});
 		this.handleDataMenuRequestClose();
-	},
+	}
 
 	dotMenuButtonClick() {
 		Dispatcher.dispatch({
 			actionType: "DOT_MENU_OPEN_BUTTON_CLICKED",
 		});
-	},
+	}
 
 	aboutDialogButtonClick() {
 		Dispatcher.dispatch({
 			actionType: "ABOUT_DIALOG_OPEN_BUTTON_CLICKED",
 		});
-	},
+	}
 
 	handleDataMenuTouchTap(event) {
 		// This prevents ghost click
@@ -58,20 +57,20 @@ export const ButtonRow = React.createClass({
 			dataMenuOpen: true,
 			anchorEl: event.currentTarget,
 		});
-	},
+	}
 
 	handleDataMenuRequestClose() {
 		this.setState({
 			dataMenuOpen: false,
 		});
-	},
+	}
 
 	render() {
 
-		const settingsOpen = this.data.settingsOpen;
-		const aboutDialogOpen = this.data.aboutDialogOpen;
-		const clockSettings = this.data.clockSettings
-		const colorTheme = this.data.colorTheme;
+		const settingsOpen = this.props.settingsOpen;
+		const aboutDialogOpen = this.props.aboutDialogOpen;
+		const clockSettings = this.props.clockSettings
+		const colorTheme = this.props.colorTheme;
 
 		const futureBtnClasses = classNames({
 			"fa": true,
@@ -102,7 +101,7 @@ export const ButtonRow = React.createClass({
 		const futureButtonStyle = (clockSettings.futureMode) ?
 			{ backgroundColor: colorTheme.bg.dark } : {};
 
-		const dataModeItems = this.data.availableDataModes.map(function(item) {
+		const dataModeItems = this.props.availableDataModes.map(function(item) {
 
 			const itemClasses = classNames({
 				"menu-item-selected": item.id === clockSettings.dataMode.id
@@ -171,4 +170,14 @@ export const ButtonRow = React.createClass({
 			</div>
 		);
 	}
-});
+}
+
+export default ButtonRowContainer = withTracker(props => {
+	return {
+		clockSettings: Controller.getClockSettings(),
+		availableDataModes: Controller.getAvailableDataModes(),
+		settingsOpen: Controller.settingsOpen(),
+		aboutDialogOpen: Controller.aboutDialogOpen(),
+		colorTheme: Controller.getColorTheme()
+	};
+})(ButtonRow);

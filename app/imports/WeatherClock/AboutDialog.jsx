@@ -1,25 +1,18 @@
 import React from 'react';
+import {Controller} from '../domains/controller.js';
+import {withTracker} from 'meteor/react-meteor-data';
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
-import {Controller} from '../domains/controller.js';
 import {Constants} from '../../lib/constants.js';
 
 
-export const AboutDialog = React.createClass({
-
-	mixins: [ReactMeteorData],
-	getMeteorData: function() {
-		return {
-			open: Controller.aboutDialogOpen(),
-			colorTheme: Controller.getColorTheme()
-		};
-	},
+class AboutDialog extends React.Component {
 
 	handleDialogClose() {
 		Dispatcher.dispatch({
 			actionType: "ABOUT_DIALOG_CLOSE_BUTTON_CLICKED"
 		});
-	},
+	}
 
 	render() {
 
@@ -46,7 +39,7 @@ export const AboutDialog = React.createClass({
 				actions={actions}
 				modal={false}
 				onRequestClose={this.handleDialogClose}
-				open={!!this.data.open}
+				open={!!this.props.open}
 				contentStyle={dialogStyle}
 				autoScrollBodyContent={true}
 			>
@@ -59,5 +52,10 @@ export const AboutDialog = React.createClass({
 			</Dialog>
 		);
 	}
+}
 
-});
+export default AboutDialogContainer = withTracker(props => {
+	return {
+		open: Controller.aboutDialogOpen()
+	};
+})(AboutDialog);

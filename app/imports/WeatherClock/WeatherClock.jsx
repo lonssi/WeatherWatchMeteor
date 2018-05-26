@@ -1,24 +1,99 @@
 import React from 'react';
 import {WeatherController} from '../domains/weather.js';
-import {Controller} from '../domains/controller.js';
-import {ButtonRow} from './ButtonRow.jsx';
+import ButtonRowContainer from './ButtonRow.jsx';
 import {WeatherClockCanvas} from './WeatherClockCanvas.js';
 import {Helpers} from '../../lib/helpers.js';
+import {Controller} from '../domains/controller.js';
+import {withTracker} from 'meteor/react-meteor-data';
 
+class WeatherClock extends React.Component {
 
-export const WeatherClock = React.createClass({
+	constructor(props) {
+		super(props);
 
-	mixins: [ReactMeteorData],
-	getMeteorData: function() {
-		return {
-			images: Controller.getImages(),
-			imagesReady: Controller.imagesReady(),
-			weatherData: WeatherController.getWeatherData(),
-			location: WeatherController.getLocation(),
-			clockSettings: Controller.getClockSettings(),
-			colorTheme: Controller.getColorTheme()
-		};
-	},
+		this.weatherclock = null;
+		this.canvasReadyForInitialization = true;
+		this.canvasIsInitialized = false;
+
+		this.clearWeatherClock = this.clearWeatherClock.bind(this);
+		this.clockUpdate = this.clockUpdate.bind(this);
+		this.resize = this.resize.bind(this);
+		this.initializeCanvas = this.initializeCanvas.bind(this);
+		this.getBottomSection = this.getBottomSection.bind(this);
+	}
+
+	componentDidMount() {
+
+		this.resizeThrottle = _.throttle(this.resize, 100);
+		window.addEventListener('resize', this.resizeThrottle);
+
+		if (this.props.weatherData && this.props.imagesReady) {
+			this.initializeCanvas();
+			this.forceUpdate();
+		}
+	}
+
+	componentWillReceiveProps() {
+
+		if (this.props.weatherData && this.canvasReadyForInitialization && this.props.imagesReady) {
+			this.initializeCanvas();
+		}
+
+		if (this.weatherclock && this.props.weatherData) {
+			this.weatherclock.setSettings(this.props.clockSettings);
+			this.weatherclock.updateWeatherData(this.props.weatherData);
+			this.weatherclock.updateColorTheme(this.props.colorTheme);
+			this.clockUpdate(true);
+		}
+
+		if (this.weatherclock && !this.props.weatherData) {
+			this.clearWeatherClock();
+		}
+	}
+
+	componentWillUnmount() {
+		window.removeEventListener('resize', this.resizeThrottle);
+		this.clearWeatherClock();
+	}
+
+	clockUpdate(flag) {
+		// If the application resumes after sleep
+		// the data may have become outdated
+		if (Helpers.dataIsOutdated(this.props.weatherData, false)) {
+			this.clearWeatherClock();
+			WeatherController.resetWeather(true);
+		} else {
+			this.weatherclock.update(flag);
+		}
+	}
+
+	resize() {
+		if (this.weatherclock) {
+			this.clockUpdate(true);
+		}
+	}
+
+	initializeCanvas() {
+
+		this.canvasReadyForInitialization = false;
+		this.canvasIsInitialized = true;
+
+		this.weatherclock = new WeatherClockCanvas(
+			this.refs.canvas,
+			this.props.images,
+			this.props.weatherData,
+			this.props.clockSettings,
+			this.refs.container,
+			this.props.colorTheme
+		);
+
+		this.clockUpdate(true);
+
+		var self = this;
+		this.clockUpdateInterval = setInterval(function() {
+			self.clockUpdate(false);
+		}, 100);
+	}
 
 	clearWeatherClock() {
 
@@ -32,91 +107,16 @@ export const WeatherClock = React.createClass({
 			this.canvasReadyForInitialization = true;
 			this.weatherclock = null;
 		}
-	},
-
-	clockUpdate(flag) {
-		// If the application resumes after sleep
-		// the data may have become outdated
-		if (Helpers.dataIsOutdated(this.data.weatherData, false)) {
-			this.clearWeatherClock();
-			WeatherController.resetWeather(true);
-		} else {
-			this.weatherclock.update(flag);
-		}
-	},
-
-	componentWillUpdate() {
-
-		if (this.data.weatherData && this.canvasReadyForInitialization && this.data.imagesReady) {
-			this.initializeCanvas();
-		}
-
-		if (this.weatherclock && this.data.weatherData) {
-			this.weatherclock.setSettings(this.data.clockSettings);
-			this.weatherclock.updateWeatherData(this.data.weatherData);
-			this.weatherclock.updateColorTheme(this.data.colorTheme);
-			this.clockUpdate(true);
-		}
-
-		if (this.weatherclock && !this.data.weatherData) {
-			this.clearWeatherClock();
-		}
-	},
-
-	componentDidMount() {
-
-		this.resizeThrottle = _.throttle(this.resize, 100);
-		window.addEventListener('resize', this.resizeThrottle);
-
-		this.canvasReadyForInitialization = true;
-
-		if (this.data.weatherData && this.canvasReadyForInitialization && this.data.imagesReady) {
-			this.initializeCanvas();
-			this.forceUpdate();
-		}
-	},
-
-	componentWillUnmount() {
-		window.removeEventListener('resize', this.resizeThrottle);
-		this.clearWeatherClock();
-	},
-
-	resize() {
-		if (this.weatherclock) {
-			this.clockUpdate(true);
-		}
-	},
-
-	initializeCanvas() {
-
-		this.canvasReadyForInitialization = false;
-		this.canvasIsInitialized = true;
-
-		this.weatherclock = new WeatherClockCanvas(
-			this.refs.canvas,
-			this.data.images,
-			this.data.weatherData,
-			this.data.clockSettings,
-			this.refs.container,
-			this.data.colorTheme
-		);
-
-		this.clockUpdate(true);
-
-		var self = this;
-		this.clockUpdateInterval = setInterval(function() {
-			self.clockUpdate(false);
-		}, 100);
-	},
+	}
 
 	getBottomSection() {
 
-		const forecastTimezone = this.data.clockSettings.forecastTimezone;
-		const updateTime = this.data.weatherData.time;
-		const colorTheme = this.data.colorTheme;
+		const forecastTimezone = this.props.clockSettings.forecastTimezone;
+		const updateTime = this.props.weatherData.time;
+		const colorTheme = this.props.colorTheme;
 
-		const tz = (forecastTimezone) ? { timeZone: this.data.weatherData.timeZone } : {};
-		const tzHours = (forecastTimezone) ? this.data.weatherData.timeZoneOffset
+		const tz = (forecastTimezone) ? { timeZone: this.props.weatherData.timeZone } : {};
+		const tzHours = (forecastTimezone) ? this.props.weatherData.timeZoneOffset
 			: -(new Date().getTimezoneOffset() / 60);
 		const prefix = (tzHours >= 0) ? "+" : "";
 
@@ -132,10 +132,10 @@ export const WeatherClock = React.createClass({
 				<div className="last-updated-container" style={styles}>
 					{updatedText}
 				</div>
-				<ButtonRow/>
+				<ButtonRowContainer/>
 			</div>
 		);
-	},
+	}
 
 	render() {
 
@@ -145,7 +145,7 @@ export const WeatherClock = React.createClass({
 
 			locationText = (
 				<div className='location-text-container'>
-					{this.data.location}
+					{this.props.location}
 				</div>
 			);
 
@@ -162,4 +162,26 @@ export const WeatherClock = React.createClass({
 			</div>
 		);
 	}
-});
+}
+
+export default WeatherClockController = withTracker(props => {
+
+	const images = Controller.getImages();
+	const imagesReady = Controller.imagesReady();
+	const weatherData = WeatherController.getWeatherData();
+	const location = WeatherController.getLocation();
+	const clockSettings = Controller.getClockSettings();
+	const colorTheme = Controller.getColorTheme();
+
+	const data = {
+		images,
+		imagesReady,
+		weatherData,
+		location,
+		clockSettings,
+		colorTheme
+	};
+
+	return data;
+
+})(WeatherClock);

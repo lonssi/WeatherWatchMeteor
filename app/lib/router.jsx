@@ -1,6 +1,7 @@
 import React from 'react';
 import {mount} from 'react-mounter';
-import {AppLayout} from '../imports/AppLayout/AppLayout.jsx';
+import AppContainer from '../imports/App/AppContainer.jsx';
+
 
 FlowRouter.route('/main', {
 	name: 'default',
@@ -11,7 +12,7 @@ FlowRouter.route('/main', {
 
 FlowRouter.route('/', {
 	name: 'main',
-	action: function(params, queryParams) {
-		mount(AppLayout, {});
+	action: function() {
+		mount(AppContainer, {});
 	}
 });

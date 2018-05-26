@@ -2,26 +2,27 @@ import React from 'react';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 import LinearProgress from 'material-ui/LinearProgress';
-import {Controller} from '../domains/controller.js';
-import {WeatherController} from '../domains/weather.js';
 import {Helpers} from '../../lib/helpers.js';
+import {WeatherController} from '../domains/weather.js';
+import {Controller} from '../domains/controller.js';
+import {withTracker} from 'meteor/react-meteor-data';
 
 
-export const TopElement = React.createClass({
+class TopElement extends React.Component {
 
-	mixins: [ReactMeteorData],
-	getMeteorData: function() {
-		return {
-			weatherLoading: WeatherController.getLoading(),
-			colorTheme: Controller.getColorTheme()
-		};
-	},
+	constructor(props) {
+		super(props);
 
-	getInitialState() {
-		return {
+		this.searchButtonClicked = this.searchButtonClicked.bind(this);
+		this.locationButtonClicked = this.locationButtonClicked.bind(this);
+		this.onKeyPress = this.onKeyPress.bind(this);
+		this.handleInputChange = this.handleInputChange.bind(this);
+		this.clearInput = this.clearInput.bind(this);
+
+		this.state = {
 			locationText: ""
 		}
-	},
+	}
 
 	searchButtonClicked() {
 		Dispatcher.dispatch({
@@ -30,13 +31,13 @@ export const TopElement = React.createClass({
 		});
 		this.clearInput();
 		Helpers.hideVirtualKeyboard();
-	},
+	}
 
 	locationButtonClicked() {
 		Dispatcher.dispatch({
 			actionType: "GET_LOCATION_BUTTON_CLICKED"
 		});
-	},
+	}
 
 	onKeyPress(event) {
 		// On enter key press
@@ -44,19 +45,19 @@ export const TopElement = React.createClass({
 			event.preventDefault();
 			this.searchButtonClicked();
 		}
-	},
+	}
 
 	handleInputChange(event) {
 	    this.setState({
 	        locationText: event.target.value
 	    })
-	},
+	}
 
 	clearInput() {
 	    this.setState({
 	        locationText: ""
 	    })
-	},
+	}
 
 	render() {
 
@@ -78,10 +79,10 @@ export const TopElement = React.createClass({
 		};
 
 		var loader;
-		if (this.data.weatherLoading) {
+		if (this.props.weatherLoading) {
 			loader = (
 				<LinearProgress
-					style={{ backgroundColor: this.data.colorTheme.bg.light, "height": "2px" }}
+					style={{ backgroundColor: this.props.colorTheme.bg.light, "height": "2px" }}
 					mode="indeterminate"
 				/>
 			);
@@ -126,4 +127,11 @@ export const TopElement = React.createClass({
 			</div>
 		);
 	}
-});
+}
+
+export default TopElementContainer = withTracker(props => {
+	return {
+		weatherLoading: WeatherController.getLoading(),
+		colorTheme: Controller.getColorTheme()
+	};
+})(TopElement);

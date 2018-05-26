@@ -1,24 +1,18 @@
 import React from 'react';
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
+import {Constants} from '../../lib/constants.js'
 import {WeatherController} from '../domains/weather.js';
-import {Constants} from '../../lib/constants.js';
+import {withTracker} from 'meteor/react-meteor-data';
 
 
-export const NotificationDialog = React.createClass({
-
-	mixins: [ReactMeteorData],
-	getMeteorData: function() {
-		return {
-			weatherStatus: WeatherController.getStatus()
-		};
-	},
+class NotificationDialog extends React.Component {
 
 	handleDialogClose() {
 		Dispatcher.dispatch({
 			actionType: "NOTIFICATION_DIALOG_CLOSED"
 		});
-	},
+	}
 
 	render() {
 
@@ -39,13 +33,18 @@ export const NotificationDialog = React.createClass({
 				actions={actions}
 				modal={false}
 				onRequestClose={this.handleDialogClose}
-				open={!!this.data.weatherStatus}
+				open={!!this.props.weatherStatus}
 				contentStyle={dialogStyle}
 				autoScrollBodyContent={true}
 			>
-				{this.data.weatherStatus}
+				{this.props.weatherStatus}
 			</Dialog>
 		);
 	}
+}
 
-});
+export default NotificationDialogContainer = withTracker(props => {
+	return {
+		weatherStatus: WeatherController.getStatus()
+	};
+})(NotificationDialog);
