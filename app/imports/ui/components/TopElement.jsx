@@ -2,9 +2,9 @@ import React from 'react';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 import LinearProgress from 'material-ui/LinearProgress';
-import {Helpers} from '../../lib/helpers.js';
-import {WeatherController} from '../domains/weather.js';
-import {Controller} from '../domains/controller.js';
+import {Helpers} from '/lib/helpers.js';
+import {WeatherController} from '/imports/api/domains/weather.js';
+import {Controller} from '/imports/api/domains/controller.js';
 import {withTracker} from 'meteor/react-meteor-data';
 
 

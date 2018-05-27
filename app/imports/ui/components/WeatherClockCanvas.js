@@ -1,7 +1,7 @@
-import {Helpers} from '../../lib/helpers.js';
-import {Colors} from '../../lib/colors.js';
-import {Constants} from '../../lib/constants.js';
-import {Controller} from '../domains/controller.js';
+import {Helpers} from '/lib/helpers.js';
+import {Colors} from '/lib/colors.js';
+import {Constants} from '/lib/constants.js';
+import {Controller} from '/imports/api/domains/controller.js';
 import {MoonPainter} from './MoonPainter.js';
 import './ArcGradient.js';
 import chroma from 'chroma-js';

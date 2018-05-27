@@ -1,8 +1,8 @@
 import React from 'react';
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
-import {Constants} from '../../lib/constants.js'
-import {WeatherController} from '../domains/weather.js';
+import {Constants} from '/lib/constants.js'
+import {WeatherController} from '/imports/api/domains/weather.js';
 import {withTracker} from 'meteor/react-meteor-data';
 
 

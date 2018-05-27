@@ -3,7 +3,7 @@ import FlatButton from 'material-ui/FlatButton';
 import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
-import {Controller} from '../domains/controller.js';
+import {Controller} from '/imports/api/domains/controller.js';
 import {withTracker} from 'meteor/react-meteor-data';
 
 

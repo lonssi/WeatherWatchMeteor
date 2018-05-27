@@ -6,8 +6,8 @@ import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import Checkbox from 'material-ui/Checkbox';
 import Slider from 'material-ui/Slider';
-import {Controller} from '../domains/controller.js';
-import {Colors} from '../../lib/colors.js';
+import {Controller} from '/imports/api/domains/controller.js';
+import {Colors} from '/lib/colors.js';
 import {withTracker} from 'meteor/react-meteor-data';
 
 

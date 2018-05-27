@@ -1,9 +1,9 @@
 import React from 'react';
-import {WeatherController} from '../domains/weather.js';
+import {WeatherController} from '/imports/api/domains/weather.js';
 import ButtonRowContainer from './ButtonRow.jsx';
 import {WeatherClockCanvas} from './WeatherClockCanvas.js';
-import {Helpers} from '../../lib/helpers.js';
-import {Controller} from '../domains/controller.js';
+import {Helpers} from '/lib/helpers.js';
+import {Controller} from '/imports/api/domains/controller.js';
 import {withTracker} from 'meteor/react-meteor-data';
 
 

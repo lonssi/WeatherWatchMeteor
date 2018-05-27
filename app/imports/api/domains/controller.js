@@ -1,6 +1,6 @@
 import {WeatherController} from './weather.js';
-import {Colors} from '../../lib/colors.js';
-import {Helpers} from '../../lib/helpers.js';
+import {Colors} from '/lib/colors.js';
+import {Helpers} from '/lib/helpers.js';
 import xss from 'xss';
 
 

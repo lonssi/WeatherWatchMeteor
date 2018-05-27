@@ -1,9 +1,9 @@
 import React from 'react';
-import {Controller} from '../domains/controller.js';
+import {Controller} from '/imports/api/domains/controller.js';
 import {withTracker} from 'meteor/react-meteor-data';
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
-import {Constants} from '../../lib/constants.js';
+import {Constants} from '/lib/constants.js';
 
 
 class AboutDialog extends React.Component {
