@@ -6,6 +6,7 @@ import {Helpers} from '../../lib/helpers.js';
 import {Controller} from '../domains/controller.js';
 import {withTracker} from 'meteor/react-meteor-data';
 
+
 class WeatherClock extends React.Component {
 
 	constructor(props) {
@@ -20,35 +21,9 @@ class WeatherClock extends React.Component {
 		this.resize = this.resize.bind(this);
 		this.initializeCanvas = this.initializeCanvas.bind(this);
 		this.getBottomSection = this.getBottomSection.bind(this);
-	}
 
-	componentDidMount() {
-
-		this.resizeThrottle = _.throttle(this.resize, 100);
+		this.resizeThrottle = _.throttle(this.resize, 200);
 		window.addEventListener('resize', this.resizeThrottle);
-
-		if (this.props.weatherData && this.props.imagesReady) {
-			this.initializeCanvas();
-			this.forceUpdate();
-		}
-	}
-
-	componentWillReceiveProps() {
-
-		if (this.props.weatherData && this.canvasReadyForInitialization && this.props.imagesReady) {
-			this.initializeCanvas();
-		}
-
-		if (this.weatherclock && this.props.weatherData) {
-			this.weatherclock.setSettings(this.props.clockSettings);
-			this.weatherclock.updateWeatherData(this.props.weatherData);
-			this.weatherclock.updateColorTheme(this.props.colorTheme);
-			this.clockUpdate(true);
-		}
-
-		if (this.weatherclock && !this.props.weatherData) {
-			this.clearWeatherClock();
-		}
 	}
 
 	componentWillUnmount() {
@@ -139,6 +114,21 @@ class WeatherClock extends React.Component {
 
 	render() {
 
+		if (this.props.weatherData && this.canvasReadyForInitialization && this.props.imagesReady) {
+			this.initializeCanvas();
+		}
+
+		if (this.weatherclock && this.props.weatherData) {
+			this.weatherclock.setSettings(this.props.clockSettings);
+			this.weatherclock.updateWeatherData(this.props.weatherData);
+			this.weatherclock.updateColorTheme(this.props.colorTheme);
+			this.clockUpdate(true);
+		}
+
+		if (this.weatherclock && !this.props.weatherData) {
+			this.clearWeatherClock();
+		}
+
 		var locationText, bottomSection;
 
 		if (this.weatherclock) {
@@ -166,22 +156,13 @@ class WeatherClock extends React.Component {
 
 export default WeatherClockController = withTracker(props => {
 
-	const images = Controller.getImages();
-	const imagesReady = Controller.imagesReady();
-	const weatherData = WeatherController.getWeatherData();
-	const location = WeatherController.getLocation();
-	const clockSettings = Controller.getClockSettings();
-	const colorTheme = Controller.getColorTheme();
-
-	const data = {
-		images,
-		imagesReady,
-		weatherData,
-		location,
-		clockSettings,
-		colorTheme
+	return {
+		images: Controller.getImages(),
+		imagesReady: Controller.imagesReady(),
+		weatherData: WeatherController.getWeatherData(),
+		location: WeatherController.getLocation(),
+		clockSettings: Controller.getClockSettings(),
+		colorTheme: Controller.getColorTheme()
 	};
-
-	return data;
 
 })(WeatherClock);
