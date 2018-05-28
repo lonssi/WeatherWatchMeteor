@@ -66,7 +66,7 @@
 }
 
 .unit-icon-container {
-	width: 100%;
+	width: 16px;
 	height: 100%;
 	display: table;
 	text-align: center;
@@ -76,6 +76,10 @@
 		display: table-cell;
 		vertical-align: middle;
 	}
+}
+
+.button-unit-icon-container {
+	margin-right: 8px;
 }
 
 .button-row-container {
@@ -90,22 +94,14 @@
 .settings-container {
 
 	.settings-check-boxes {
-		> div {
-			margin-top: 12px;
+		margin-bottom: 12px;
+
+		> div > label {
+			margin-bottom: -10px !important;
 		}
 	}
+}
 
-	.settings-name-field {
-		margin-top: 10px;
-		line-height: 22px;
-		transform-origin: left top 0px;
-		transform: scale(0.75);
-	}
-
-	.settings-slider-container {
-		width: 86%;
-		margin: 0 auto;
-		margin-top: -18px;
-		margin-bottom: -40px;
-	}
+.select-field:before {
+	border-bottom: solid 1px var(--line-color) !important;
 }

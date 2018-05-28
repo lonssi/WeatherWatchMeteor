@@ -1,42 +1,43 @@
 import React from 'react';
-import FlatButton from 'material-ui/FlatButton';
-import TextField from 'material-ui/TextField';
-import LinearProgress from 'material-ui/LinearProgress';
-import {Controller} from '../domains/controller.js';
-import {WeatherController} from '../domains/weather.js';
-import {Helpers} from '../../lib/helpers.js';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import {Helpers} from '/lib/helpers.js';
+import {WeatherController} from '/imports/api/domains/weather.js';
+import {Controller} from '/imports/api/domains/controller.js';
+import {withTracker} from 'meteor/react-meteor-data';
 
 
-export const TopElement = React.createClass({
+class TopElement extends React.Component {
 
-	mixins: [ReactMeteorData],
-	getMeteorData: function() {
-		return {
-			weatherLoading: WeatherController.getLoading(),
-			colorTheme: Controller.getColorTheme()
-		};
-	},
+	constructor(props) {
+		super(props);
 
-	getInitialState() {
-		return {
+		this.searchButtonClicked = this.searchButtonClicked.bind(this);
+		this.locationButtonClicked = this.locationButtonClicked.bind(this);
+		this.onKeyPress = this.onKeyPress.bind(this);
+		this.handleInputChange = this.handleInputChange.bind(this);
+		this.clearInput = this.clearInput.bind(this);
+
+		this.state = {
 			locationText: ""
 		}
-	},
+	}
 
 	searchButtonClicked() {
 		Dispatcher.dispatch({
 			actionType: "SEARCH_BUTTON_CLICKED",
-			data: this.refs.locationTextfield.input.value
+			data: this.state.locationText
 		});
 		this.clearInput();
 		Helpers.hideVirtualKeyboard();
-	},
+	}
 
 	locationButtonClicked() {
 		Dispatcher.dispatch({
 			actionType: "GET_LOCATION_BUTTON_CLICKED"
 		});
-	},
+	}
 
 	onKeyPress(event) {
 		// On enter key press
@@ -44,19 +45,19 @@ export const TopElement = React.createClass({
 			event.preventDefault();
 			this.searchButtonClicked();
 		}
-	},
+	}
 
 	handleInputChange(event) {
-	    this.setState({
-	        locationText: event.target.value
-	    })
-	},
+		this.setState({
+			locationText: event.target.value
+		})
+	}
 
 	clearInput() {
-	    this.setState({
-	        locationText: ""
-	    })
-	},
+		this.setState({
+			locationText: ""
+		})
+	}
 
 	render() {
 
@@ -74,14 +75,15 @@ export const TopElement = React.createClass({
 
 		const buttonStyle = {
 			width: '36px',
-			minWidth: '36px'
+			minWidth: '36px',
+			fontSize: '16px'
 		};
 
 		var loader;
-		if (this.data.weatherLoading) {
+		if (this.props.weatherLoading) {
 			loader = (
 				<LinearProgress
-					style={{ backgroundColor: this.data.colorTheme.bg.light, "height": "2px" }}
+					style={{ backgroundColor: this.props.colorTheme.bg.light, "height": "2px" }}
 					mode="indeterminate"
 				/>
 			);
@@ -95,27 +97,28 @@ export const TopElement = React.createClass({
 					<div className="location-input-container">
 						<form>
 							<div className="location-button-container align-left">
-								<FlatButton
-									icon={<i className={locationBtnClasses} />}
-									onTouchTap={this.locationButtonClicked}
+								<Button
+									onClick={this.locationButtonClicked}
 									style={buttonStyle}
 									disabled={locationDisabled}
-								/>
+								>
+									<i className={locationBtnClasses} />
+								</Button>
 							</div>
 							<TextField
 								className="location-input-field"
-								hintText="Location"
-								ref='locationTextfield'
+								placeholder="Location"
 								onKeyPress={this.onKeyPress}
 								value={this.state.locationText}
 								onChange={this.handleInputChange}
 							/>
 							<div className="location-button-container align-right">
-								<FlatButton
-									icon={<i className={searchBtnClasses} />}
-									onTouchTap={this.searchButtonClicked}
+								<Button
+									onClick={this.searchButtonClicked}
 									style={buttonStyle}
-								/>
+								>
+									<i className={searchBtnClasses} />
+								</Button>
 							</div>
 						</form>
 					</div>
@@ -126,4 +129,11 @@ export const TopElement = React.createClass({
 			</div>
 		);
 	}
-});
+}
+
+export default TopElementContainer = withTracker(props => {
+	return {
+		weatherLoading: WeatherController.getLoading(),
+		colorTheme: Controller.getColorTheme()
+	};
+})(TopElement);

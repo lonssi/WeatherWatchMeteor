@@ -1,6 +1,6 @@
 import {Meteor} from 'meteor/meteor';
-import {Constants} from '../../lib/constants.js';
-import {Helpers} from '../../lib/helpers.js';
+import {Constants} from '/lib/constants.js';
+import {Helpers} from '/lib/helpers.js';
 
 
 var currentLocation = new ReactiveVar(null);
