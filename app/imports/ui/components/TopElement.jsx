@@ -1,7 +1,7 @@
 import React from 'react';
-import FlatButton from 'material-ui/FlatButton';
-import TextField from 'material-ui/TextField';
-import LinearProgress from 'material-ui/LinearProgress';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import {Helpers} from '/lib/helpers.js';
 import {WeatherController} from '/imports/api/domains/weather.js';
 import {Controller} from '/imports/api/domains/controller.js';
@@ -27,7 +27,7 @@ class TopElement extends React.Component {
 	searchButtonClicked() {
 		Dispatcher.dispatch({
 			actionType: "SEARCH_BUTTON_CLICKED",
-			data: this.refs.locationTextfield.input.value
+			data: this.state.locationText
 		});
 		this.clearInput();
 		Helpers.hideVirtualKeyboard();
@@ -48,15 +48,15 @@ class TopElement extends React.Component {
 	}
 
 	handleInputChange(event) {
-	    this.setState({
-	        locationText: event.target.value
-	    })
+		this.setState({
+			locationText: event.target.value
+		})
 	}
 
 	clearInput() {
-	    this.setState({
-	        locationText: ""
-	    })
+		this.setState({
+			locationText: ""
+		})
 	}
 
 	render() {
@@ -75,7 +75,8 @@ class TopElement extends React.Component {
 
 		const buttonStyle = {
 			width: '36px',
-			minWidth: '36px'
+			minWidth: '36px',
+			fontSize: '16px'
 		};
 
 		var loader;
@@ -96,27 +97,28 @@ class TopElement extends React.Component {
 					<div className="location-input-container">
 						<form>
 							<div className="location-button-container align-left">
-								<FlatButton
-									icon={<i className={locationBtnClasses} />}
-									onTouchTap={this.locationButtonClicked}
+								<Button
+									onClick={this.locationButtonClicked}
 									style={buttonStyle}
 									disabled={locationDisabled}
-								/>
+								>
+									<i className={locationBtnClasses} />
+								</Button>
 							</div>
 							<TextField
 								className="location-input-field"
-								hintText="Location"
-								ref='locationTextfield'
+								placeholder="Location"
 								onKeyPress={this.onKeyPress}
 								value={this.state.locationText}
 								onChange={this.handleInputChange}
 							/>
 							<div className="location-button-container align-right">
-								<FlatButton
-									icon={<i className={searchBtnClasses} />}
-									onTouchTap={this.searchButtonClicked}
+								<Button
+									onClick={this.searchButtonClicked}
 									style={buttonStyle}
-								/>
+								>
+									<i className={searchBtnClasses} />
+								</Button>
 							</div>
 						</form>
 					</div>

@@ -201,15 +201,15 @@ var setSecondHand = function(value) {
 };
 
 var setHue = function(value, cache) {
-	value = Helpers.toFloat(value);
-	if (_.isNumber(value) && value >= 0 && value <= 1) {
-		hue.set(value);
-		localStorage.hue = value;
-	} else {
-		if (cache) {
-			localStorage.removeItem('hue');
-		}
-	}
+	// value = Helpers.toFloat(value);
+	// if (_.isNumber(value) && value >= 0 && value <= 1) {
+	// 	hue.set(value);
+	// 	localStorage.hue = value;
+	// } else {
+	// 	if (cache) {
+	// 		localStorage.removeItem('hue');
+	// 	}
+	// }
 };
 
 var setColorTheme = function(value, cache) {

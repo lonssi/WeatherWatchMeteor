@@ -1,8 +1,10 @@
 import React from 'react';
-import FlatButton from 'material-ui/FlatButton';
-import Popover from 'material-ui/Popover';
-import Menu from 'material-ui/Menu';
-import MenuItem from 'material-ui/MenuItem';
+import Button from '@material-ui/core/Button';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import Icon from '@material-ui/core/Icon';
 import {Controller} from '/imports/api/domains/controller.js';
 import {withTracker} from 'meteor/react-meteor-data';
 
@@ -87,6 +89,12 @@ class ButtonRow extends React.Component {
 			minWidth: '36px'
 		};
 
+		const iconStyle = {
+			fontSize: '16px',
+			lineHeight: '16px',
+			textAlign: 'center'
+		};
+
 		const dotMenuBtnStyle = (settingsOpen)
 			? _.assign({}, smallButtonStyle, { backgroundColor: colorTheme.bg.dark })
 			: smallButtonStyle;
@@ -102,71 +110,65 @@ class ButtonRow extends React.Component {
 			{ backgroundColor: colorTheme.bg.dark } : {};
 
 		const dataModeItems = this.props.availableDataModes.map(function(item) {
-
-			const itemClasses = classNames({
-				"menu-item-selected": item.id === clockSettings.dataMode.id
-			});
-
-			const buttonClasses = "fa " + item.icon;
-
-			const leftIcon = (
-				<div>
-					<div className="unit-icon-container">
-						<i className={buttonClasses} />
-					</div>
-				</div>
-			);
-
-			const itemStyle = (item.id === clockSettings.dataMode.id) ?
-				{backgroundColor: colorTheme.bg.darker} : {};
-
 			return (
 				<MenuItem
-					style={itemStyle}
-					primaryText={item.text}
+					selected={item.id === clockSettings.dataMode.id}
 					key={item.id}
 					onClick={this.dataModeButtonClick.bind(null, item.id)}
-					leftIcon={leftIcon}
-				/>
+				>
+					<ListItemIcon>
+						<div className="unit-icon-container">
+							<i className={"fa " + item.icon}/>
+						</div>
+					</ListItemIcon>
+					<ListItemText inset primary={item.text} />
+				</MenuItem>
 			);
 		}.bind(this));
 
+		const dataModeIconClasses = "fa " + clockSettings.dataMode.icon;
+
 		return (
 			<div className="button-row-container">
-				<FlatButton
+				<Button
 					onClick={this.handleDataMenuTouchTap}
-					icon={<i className={"fa " + clockSettings.dataMode.icon} />}
-					label="data"
 					style={dataMenuButtonStyle}
-				/>
-				<Popover
-					open={this.state.dataMenuOpen}
-					anchorEl={this.state.anchorEl}
-					anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
-					targetOrigin={{horizontal: 'left', vertical: 'top'}}
-					onRequestClose={this.handleDataMenuRequestClose}
 				>
-					<Menu>
-						{dataModeItems}
-					</Menu>
-				</Popover>
-				<FlatButton
-					icon={<i className={dotMenuBtnClasses} />}
-					onTouchTap={this.dotMenuButtonClick}
+					<div className="button-unit-icon-container">
+						<i className={dataModeIconClasses}/>
+					</div>
+					data
+				</Button>
+				<Menu
+					id="simple-menu"
+					anchorEl={this.state.anchorEl}
+					open={this.state.dataMenuOpen}
+					onClose={this.handleDataMenuRequestClose}
+				>
+					{dataModeItems}
+				</Menu>
+
+				<Button
+					onClick={this.dotMenuButtonClick}
 					style={dotMenuBtnStyle}
-				/>
-				<FlatButton
-					label="?"
-					onTouchTap={this.aboutDialogButtonClick}
+				>
+					<Icon className={dotMenuBtnClasses} style={iconStyle}></Icon>
+				</Button>
+				<Button
+					onClick={this.aboutDialogButtonClick}
 					style={aboutDialogBtnStyle}
-					labelStyle={{ fontWeight: 'bold' }}
-				/>
-				<FlatButton
-					icon={<i className={futureBtnClasses} />}
-					label="+12h"
-					onTouchTap={this.futureButtonClick}
+				>
+					<Icon className={"fa fa-question"} style={iconStyle}></Icon>
+				</Button>
+				<Button
+					onClick={this.futureButtonClick}
 					style={futureButtonStyle}
-				/>
+				>
+					<div className="button-unit-icon-container">
+						<i className={futureBtnClasses}/>
+					</div>
+					+12h
+				</Button>
 			</div>
 		);
 	}

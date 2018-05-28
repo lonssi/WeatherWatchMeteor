@@ -6,9 +6,9 @@ import AboutDialogContainer from './AboutDialog.jsx';
 import SettingsContainer from './Settings.jsx';
 import TopElementContainer from './TopElement.jsx';
 import WeatherClockContainer from './WeatherClock.jsx';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import {MuiThemeProvider, createMuiTheme} from '@material-ui/core/styles';
 import chroma from 'chroma-js';
+
 
 var firstLoad = true;
 
@@ -24,6 +24,7 @@ export default class App extends React.Component {
 
 		document.body.style.setProperty('--text-color', colorTheme.text.light);
 		document.body.style.setProperty('--background-color', colorTheme.bg.light);
+		document.body.style.setProperty('--line-color', colorTheme.misc.border);
 		document.body.style.setProperty('--link-color', colorTheme.accent.light);
 		const linkHoverColor = chroma(colorTheme.accent.light).brighten(1).css();
 		document.body.style.setProperty('--link-hover-color', linkHoverColor);
@@ -52,22 +53,51 @@ export default class App extends React.Component {
 			return null;
 		}
 
-		const muiTheme = getMuiTheme({
+		const hover = (colorTheme.id === "dark")
+			? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.08)";
+
+		const selected = (colorTheme.id === "dark")
+			? "rgba(255, 255, 255, 0.14)" : "rgba(0, 0, 0, 0.14)";
+
+		const muiTheme = createMuiTheme({
 			palette: {
-				primary1Color: colorTheme.accent.light,
-				textColor: colorTheme.text.light,
-				borderColor: colorTheme.misc.border,
-				disabledColor: colorTheme.misc.hint,
-				canvasColor: colorTheme.misc.menu,
-				alternateTextColor: colorTheme.bg.dark,
-				accent1Color: colorTheme.accent.light
+				type: colorTheme.id,
+				common: {
+					white: colorTheme.text.light
+				},
+				primary: {
+					light: colorTheme.accent.light,
+					main: colorTheme.accent.light,
+					dark: colorTheme.accent.light,
+					contrastText: colorTheme.accent.light,
+				},
+				secondary: {
+					light: colorTheme.accent.light,
+					main: colorTheme.accent.light,
+					dark: colorTheme.accent.light,
+					contrastText: colorTheme.accent.light,
+				},
+				background: {
+					paper: colorTheme.misc.menu,
+				},
+				text: {
+					primary: colorTheme.text.light,
+					secondary: colorTheme.text.dark,
+					disabled: colorTheme.text.darker,
+					hint: colorTheme.misc.hint
+				},
+				action: {
+					active: colorTheme.text.light,
+					hover: hover,
+					selected: selected,
+				}
 			}
 		});
 
 		this.setBodyStyles(colorTheme);
 
 		return (
-			<MuiThemeProvider muiTheme={muiTheme}>
+			<MuiThemeProvider theme={muiTheme}>
 				<div className="content-container">
 					<NotificationDialogContainer/>
 					<AboutDialogContainer/>

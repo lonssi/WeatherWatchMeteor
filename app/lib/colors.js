@@ -8,7 +8,6 @@ const colorThemeDark = {
 	bg: {
 		light: '#485865',
 		dark: '#3E4B57',
-		darker: '#37434C',
 		clock: '#FFFFFF',
 		empty: '#646B71'
 	},
@@ -41,13 +40,12 @@ const colorThemeLight = {
 	bg: {
 		light: '#FFFFFF',
 		dark: '#EAEAEA',
-		darker: '#CBCBCB',
 		clock: '#FFFFFF',
 		empty: '#D1D1D1'
 	},
 	accent: {
-		light: '#6A859A',
-		dark: '#54697A'
+		light: '#4F8FBC',
+		dark: '#3C6D90'
 	},
 	text: {
 		light: '#363636',

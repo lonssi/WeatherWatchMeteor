@@ -13,7 +13,7 @@ const LISTS_METHODS = [
 
 DDPRateLimiter.addRule({
 	name(name) {
-		return _.contains(LISTS_METHODS, name);
+		return _.includes(LISTS_METHODS, name);
 	},
 
 	// Rate limit per connection ID

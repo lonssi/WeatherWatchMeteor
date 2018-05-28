@@ -1,9 +1,12 @@
 import React from 'react';
 import {Controller} from '/imports/api/domains/controller.js';
 import {withTracker} from 'meteor/react-meteor-data';
-import FlatButton from 'material-ui/FlatButton';
-import Dialog from 'material-ui/Dialog';
-import {Constants} from '/lib/constants.js';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 
 class AboutDialog extends React.Component {
@@ -16,17 +19,6 @@ class AboutDialog extends React.Component {
 
 	render() {
 
-		const dialogStyle = {
-			maxWidth: Constants.dialogWidth
-		};
-
-		const actions = [
-			<FlatButton
-				label="close"
-				onClick={this.handleDialogClose}
-			/>
-		];
-
 		const link = (
 			<a href="https://github.com/lonssi/WeatherWatch">
 				GitHub
@@ -35,20 +27,24 @@ class AboutDialog extends React.Component {
 
 		return (
 			<Dialog
-				title="About"
-				actions={actions}
-				modal={false}
-				onRequestClose={this.handleDialogClose}
-				open={!!this.props.open}
-				contentStyle={dialogStyle}
-				autoScrollBodyContent={true}
+				open={this.props.open}
+				onClose={this.handleDialogClose}
+				maxWidth="sm"
 			>
-				<p>
-					Weather data provided by the Finnish Meteorological Institute.
-					<br/>
-					<br/>
-					WeatherWatch is open source: {link}
-				</p>
+				<DialogTitle>{"About"}</DialogTitle>
+				<DialogContent>
+					<DialogContentText>
+						The weather data is provided by the Finnish Meteorological Institute.
+						<br/>
+						<br/>
+						WeatherWatch is open source: {link}
+					</DialogContentText>
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={this.handleDialogClose} autoFocus>
+						CLOSE
+					</Button>
+				</DialogActions>
 			</Dialog>
 		);
 	}

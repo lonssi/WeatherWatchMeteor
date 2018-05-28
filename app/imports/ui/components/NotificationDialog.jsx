@@ -1,12 +1,20 @@
 import React from 'react';
-import FlatButton from 'material-ui/FlatButton';
-import Dialog from 'material-ui/Dialog';
-import {Constants} from '/lib/constants.js'
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import {WeatherController} from '/imports/api/domains/weather.js';
 import {withTracker} from 'meteor/react-meteor-data';
 
 
 class NotificationDialog extends React.Component {
+
+	constructor(props) {
+		super(props);
+		this.lastMessage = "";
+	}
 
 	handleDialogClose() {
 		Dispatcher.dispatch({
@@ -16,28 +24,30 @@ class NotificationDialog extends React.Component {
 
 	render() {
 
-		const dialogStyle = {
-			maxWidth: Constants.dialogWidth
-		};
+		const message = this.props.weatherStatus;
 
-		const actions = [
-			<FlatButton
-				label="close"
-				onClick={this.handleDialogClose}
-			/>
-		];
+		if (message) {
+			this.lastMessage = message;
+		}
 
 		return (
+
 			<Dialog
-				title="Error"
-				actions={actions}
-				modal={false}
-				onRequestClose={this.handleDialogClose}
 				open={!!this.props.weatherStatus}
-				contentStyle={dialogStyle}
-				autoScrollBodyContent={true}
+				onClose={this.handleDialogClose}
+				maxWidth="sm"
 			>
-				{this.props.weatherStatus}
+				<DialogTitle>{"Error"}</DialogTitle>
+				<DialogContent>
+					<DialogContentText>
+						{this.lastMessage}
+					</DialogContentText>
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={this.handleDialogClose} autoFocus>
+						CLOSE
+					</Button>
+				</DialogActions>
 			</Dialog>
 		);
 	}

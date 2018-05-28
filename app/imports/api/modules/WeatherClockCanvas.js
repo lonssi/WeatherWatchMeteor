@@ -137,7 +137,7 @@ export class WeatherClockCanvas {
 		const minutes = this.date.getMinutes();
 		const seconds = this.date.getSeconds();
 
-		const minuteIndicatorLength = this.clockRadius * 0.76855;
+		const minuteIndicatorLength = this.clockRadius - this.unit - this.clockRadius / 28;
 		const hourIndicatorLength =  minuteIndicatorLength / 1.5;
 
 		this.drawIndicator(
@@ -233,20 +233,19 @@ export class WeatherClockCanvas {
 		for (var i = hour; i < hour + 12; i++) {
 
 			const angle = (i * 30) * Math.PI/180;
-			const newHour = (i > 24) ? i - 24 : i;
 
 			this.ctxBg.save();
 
-			this.ctxBg.beginPath();
 			this.ctxBg.translate(this.center.x, this.center.y);
 			this.ctxBg.rotate(angle);
-			this.ctxBg.translate(0, -this.clockRadius * 0.925);
+			this.ctxBg.translate(0, -this.clockRadius + this.unit);
+			this.ctxBg.beginPath();
 
 			if (i % 3 === 0) {
 				this.ctxBg.save();
-				this.ctxBg.translate(0, this.clockRadius * 0.2);
+				this.ctxBg.translate(0, this.clockRadius * 0.225);
 				this.ctxBg.rotate(-angle);
-				this.ctxBg.fillText(newHour, 0, 0);
+				this.ctxBg.fillText(i % 24, 0, 0);
 				this.ctxBg.restore();
 			}
 
