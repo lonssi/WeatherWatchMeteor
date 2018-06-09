@@ -46,7 +46,7 @@ RUN \
     echo '\nexport PATH="node_modules/.bin:$PATH"' >> /root/.bashrc
 
 # Install Meteor
-RUN curl https://install.meteor.com/?release=1.5.1 | sh
+RUN curl https://install.meteor.com/?release=1.6.1.1 | sh
 ENV TOOL_NODE_FLAGS="--max-old-space-size=4096"
 
 # Install packages
